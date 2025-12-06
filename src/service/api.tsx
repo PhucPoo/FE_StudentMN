@@ -1,7 +1,14 @@
 import axios from "axios";
 
+const config = {
+  headers: { 
+    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkBzdHVkZW50bW4uY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJGdWxsTmFtZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3NjUwMzI5OTcsImlzcyI6IlN0dWRlbnRNTiIsImF1ZCI6IlN0dWRlbnRNTlVzZXJzIn0.dc3IHSCY-k6HYHDN8JYb8_TKFXgQGB-E65UGUpBb-Kw`
+  }
+};
+
 const api = axios.create({
-  baseURL: "https://localhost:7264",
+  baseURL: "https://localhost:7264/api",
+  ...config
 });
 
 export default api;
