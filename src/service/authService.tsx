@@ -1,39 +1,72 @@
 import api from "./api";
 
-const TOKEN_KEY = "token";
+const ACCESS_TOKEN_KEY = "accessToken";
+const REFRESH_TOKEN_KEY = "refreshToken";
 
+
+
+// ================== LOGIN ==================
 export async function login({ username, password }) {
   try {
-    const response = await api.post("/api/auth/login", { username, password });
+    const res = await api.post("/auth/login", { username, password });
 
-    const { token } = response.data;
-    if (token) {
-      localStorage.setItem(TOKEN_KEY, token);
-      // Set token mặc định cho các request sau
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    if (res.data.accessToken && res.data.refreshToken) {
+      setAccessToken(res.data.accessToken);
+      setRefreshToken(res.data.refreshToken);
     }
 
-    return response.data;
+    return res.data;
   } catch (err) {
-    // Lấy thông báo lỗi từ API nếu có
-    throw new Error(err.response?.data?.message || "Login failed");
+    throw new Error(err.response?.data?.message || "Login thất bại");
   }
 }
 
+// ================== LOGOUT ==================
 export function logout() {
-  localStorage.removeItem(TOKEN_KEY);
-  setAuthToken(null);
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
 }
 
-export function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
+// ================== GET TOKEN ==================
+export function getAccessToken() {
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
+}
+export function getRefreshToken() {
+  return localStorage.getItem(REFRESH_TOKEN_KEY);
 }
 
-// Optional: cấu hình token tự động cho các request
-export function setAuthToken(token) {
-  if (token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common["Authorization"];
+// ================== SET TOKEN ==================
+export function setAccessToken(token) {
+  token
+    ? localStorage.setItem(ACCESS_TOKEN_KEY, token)
+    : localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+export function setRefreshToken(token) {
+  token
+    ? localStorage.setItem(REFRESH_TOKEN_KEY, token)
+    : localStorage.removeItem(REFRESH_TOKEN_KEY);
+}
+
+// ================== AUTO REFRESH TOKEN ==================
+export async function refreshAccessToken() {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return null;
+
+  try {
+    const res = await api.post("/auth/refresh-token", {
+      refreshToken: refreshToken,
+    });
+
+    if (res.data.accessToken) {
+      setAccessToken(res.data.accessToken);
+      if (res.data.refreshToken)
+        setRefreshToken(res.data.refreshToken); // backend có thể trả refresh mới
+      return res.data.accessToken;
+
+    }
+    return null;
+  } catch {
+    logout();
+    return null;
   }
 }
