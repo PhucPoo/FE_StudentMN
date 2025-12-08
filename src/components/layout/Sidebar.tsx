@@ -26,7 +26,7 @@ const navItems: NavItem[] = [
   { icon: Home, label: "Trang chủ", path: "/" },
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: MessageSquare, label: "Tin nhắn", path: "/messages" },
-  { icon: Users, label: "Quản lí tài khoản", path: "/forum" },
+  { icon: Users, label: "Quản lí tài khoản", path: "/admin-management" },
   { icon: UserCircle, label: "Thông tin SV", path: "/student-info" },
   { icon: ClipboardList, label: "Bảng điểm SV", path: "/grades" },
   { icon: Database, label: "Quản lý CSDL", path: "/database" },

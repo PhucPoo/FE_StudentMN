@@ -1,6 +1,6 @@
 import api from "./api";
 
-export const getUsers = (pageNumber: number, pageSize: number) => api.get("Users",{params:{pageNumber,pageSize}});
+export const getUsers = (pageNumber: number, pageSize: number, search:string) => api.get("Users",{params:{pageNumber,pageSize,search}});
 export const addUsers = (data) => api.post("Users", data);
 export const updateUsers = (id: number, data: any) =>
   api.put(`Users/${id}`, data, {

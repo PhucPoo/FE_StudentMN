@@ -20,11 +20,12 @@ export default function AccountList() {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(8);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [search, setSearch] = useState("");
 
 
-  const loadUsers = async (page:number) => {
+  const loadUsers = async (page: number) => {
     try {
-      const res = await getUsers(page, pageSize);
+      const res = await getUsers(page, pageSize, search);
 
       setUsers(res.data.data);
       setTotalUsers(res.data.totalCount);
@@ -38,37 +39,37 @@ export default function AccountList() {
   }, [page]);
 
   const handleDelete = async (user: any) => {
-     Modal.confirm({
-    title: `Bạn có chắc muốn xóa ${user.username}?`,
-    okText: "Xóa",
-    cancelText: "Hủy",
-    okType: "danger",
-    onOk: async () => {
-      try {
-      await deleteUsers(user.id);
-       notification.success({
-          title: "Thành công",
-          description: `Xóa ${user.username} thành công!`,
+    Modal.confirm({
+      title: `Bạn có chắc muốn xóa ${user.username}?`,
+      okText: "Xóa",
+      cancelText: "Hủy",
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await deleteUsers(user.id);
+          notification.success({
+            title: "Thành công",
+            description: `Xóa ${user.username} thành công!`,
+            placement: "topRight",
+          });
+          loadUsers(page);
+        } catch (error) {
+          notification.error({
+            title: "Lỗi",
+            description: `Xóa ${user.username} thất bại!`,
+            placement: "topRight",
+          });
+        }
+      },
+      onCancel: () => {
+        notification.info({
+          title: "Hủy",
+          description: `Bạn đã hủy xóa ${user.username}.`,
           placement: "topRight",
         });
-      loadUsers(page);
-    } catch (error) {
-        notification.error({
-          title: "Lỗi",
-          description: `Xóa ${user.username} thất bại!`,
-          placement: "topRight",
-        });
-      }
-    },
-    onCancel: () => {
-      notification.info({
-        title: "Hủy",
-        description: `Bạn đã hủy xóa ${user.username}.`,
-        placement: "topRight",
-      });
-    },
-  });
-};
+      },
+    });
+  };
 
   const getRoleName = (roleId: number) => {
     switch (roleId) {
@@ -82,7 +83,6 @@ export default function AccountList() {
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* HEADER */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-foreground">Quản lí tài khoản</h1>
           <Button onClick={() => setOpenAdd(true)}>
@@ -91,15 +91,25 @@ export default function AccountList() {
           </Button>
         </div>
 
-        {/* SEARCH + TABLE */}
         <Card className="card-shadow">
           <CardHeader className="flex flex-row items-center justify-between gap-4">
             <div className="relative w-full max-w-xs">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Tìm kiếm tài khoản..."
-                className="pl-10 h-11 rounded-xl shadow-sm"
-              />
+              <div className="relative w-full max-w-xs">
+                <Input
+                  placeholder="Tìm kiếm tài khoản..."
+                  className="pl-10 h-11 rounded-xl shadow-sm"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Search
+                  className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                  onClick={() => {
+                    setPage(1); 
+                    loadUsers(1); 
+                  }}
+                />
+              </div>
+
             </div>
           </CardHeader>
 
@@ -150,31 +160,30 @@ export default function AccountList() {
                 ))}
               </TableBody>
             </Table>
-            {/* PAGINATION */}
+
             <Pagination
               current={page}
               pageSize={pageSize}
               total={totalUsers}
               onChange={(page) => setPage(page)}
-              showSizeChanger={false} 
+              showSizeChanger={false}
               className="mt-4"
             />
+
           </CardContent>
         </Card>
 
-        {/* ADD ACCOUNT MODAL */}
         <AddAccount
           isOpen={openAdd}
           onClose={() => setOpenAdd(false)}
-          onAddSuccess={()=>loadUsers(page)}
+          onAddSuccess={() => loadUsers(page)}
           addAccountApi={addUsers}
         />
 
-        {/* UPDATE ACCOUNT MODAL */}
         <UpdateAccount
           isOpen={openUpdate}
           onClose={() => setOpenUpdate(false)}
-          onUpdateSuccess={()=>loadUsers( page)}
+          onUpdateSuccess={() => loadUsers(page)}
           updateAccountApi={updateUsers}
           userData={selectedUser}
         />
