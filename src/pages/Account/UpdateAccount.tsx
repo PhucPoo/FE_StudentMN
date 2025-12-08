@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { notification } from "antd";
 
 interface UpdateAccountModalProps {
   isOpen: boolean;
@@ -50,11 +51,19 @@ export default function UpdateAccountModal({
         email: formData.email,
         password: "",
       });
-      alert("Cập nhật tài khoản thành công!");
+      notification.success({
+        title: "Thành công",
+        description: "Cập nhật tài khoản thành công!",
+        placement: "topRight",
+      });
       onClose();
       onUpdateSuccess();
     } catch (error) {
-      alert("Lỗi khi cập nhật tài khoản!");
+      notification.success({
+        title: "Lỗi",
+        description: "Cập nhật tài khoản thất bại!",
+        placement: "topRight",
+      });
       console.error(error);
     }
   };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {  notification } from "antd";
 
 interface AddAccountModalProps {
   isOpen: boolean;
@@ -26,12 +27,20 @@ export default function AddAccountModal({
   const handleSubmit = async () => {
     try {
       await addAccountApi(formData);
-      alert("Thêm tài khoản thành công!");
+      notification.success({
+        title: "Thành công",
+        description: "Thêm tài khoản thành công!",
+        placement: "topRight",
+      });
       onClose();
       onAddSuccess();
       setFormData({ username: "", password: "", fullName: "", email: "", roleId: "" }); 
     } catch (error) {
-      alert("Lỗi thêm tài khoản!");
+       notification.error({
+        title: "Lỗi",
+        description: "Có lỗi xảy ra khi thêm tài khoản!",
+        placement: "topRight",
+      });
       console.error(error);
     }
   };

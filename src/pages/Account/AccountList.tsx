@@ -9,7 +9,7 @@ import { Table } from "@/components/ui/table";
 import { addUsers, deleteUsers, getUsers, updateUsers } from "@/service/accountService";
 import AddAccount from "./AddAccount";
 import UpdateAccount from "./UpdateAccount";
-import { Pagination } from 'antd';
+import { Pagination, Modal, notification } from 'antd';
 
 export default function AccountList() {
   const [users, setUsers] = useState([]);
@@ -38,15 +38,37 @@ export default function AccountList() {
   }, [page]);
 
   const handleDelete = async (user: any) => {
-    if (!confirm(`Bạn có chắc muốn xóa ${user.username}?`)) return;
-
-    try {
+     Modal.confirm({
+    title: `Bạn có chắc muốn xóa ${user.username}?`,
+    okText: "Xóa",
+    cancelText: "Hủy",
+    okType: "danger",
+    onOk: async () => {
+      try {
       await deleteUsers(user.id);
+       notification.success({
+          title: "Thành công",
+          description: `Xóa ${user.username} thành công!`,
+          placement: "topRight",
+        });
       loadUsers(page);
     } catch (error) {
-      console.error("Lỗi xóa user:", error);
-    }
-  };
+        notification.error({
+          title: "Lỗi",
+          description: `Xóa ${user.username} thất bại!`,
+          placement: "topRight",
+        });
+      }
+    },
+    onCancel: () => {
+      notification.info({
+        title: "Hủy",
+        description: `Bạn đã hủy xóa ${user.username}.`,
+        placement: "topRight",
+      });
+    },
+  });
+};
 
   const getRoleName = (roleId: number) => {
     switch (roleId) {
