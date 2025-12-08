@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Messages from "./pages/Messages";
-import Forum from "./pages/Forum";
+import Forum from "./pages/Account/AccountList";
 import StudentInfo from "./pages/Student/StudentInfo";
 import Grades from "./pages/Grades";
 import DatabaseManagement from "./pages/DatabaseManagement";

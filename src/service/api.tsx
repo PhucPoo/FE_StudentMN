@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken,  refreshAccessToken } from "./authService";
 
 const api = axios.create({
-  baseURL: "https://localhost:7264/api", // sửa cho đúng backend của bạn
+  baseURL: "https://localhost:7264/api", 
 });
 
 
@@ -21,7 +21,7 @@ api.interceptors.response.use(
       const newToken = await refreshAccessToken();
       if (newToken) {
         error.config.headers.Authorization = `Bearer ${newToken}`;
-        return api(error.config); // 🔥 gọi lại request cũ
+        return api(error.config); 
       }
     }
     return Promise.reject(error);
