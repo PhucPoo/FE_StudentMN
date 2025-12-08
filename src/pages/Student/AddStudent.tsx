@@ -1,79 +1,104 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useState } from "react"
-import api from "@/service/api"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {  notification } from "antd";
 
-export default function AddStudent({ onClose, onAdded }) {
-    const [form, setForm] = useState({
-        fullName: "",
-        gender: "",
-        address: "",
-        dob: ""
-    })
-    const [loading, setLoading] = useState(false)
+interface AddStudentModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAddSuccess: () => void;
+  addStudentApi: (data: any) => Promise<any>;
+}
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value })
+export default function AddStudentModal({
+  isOpen,
+  onClose,
+  onAddSuccess,
+  addStudentApi,
+}: AddStudentModalProps) {
+  const [formData, setFormData] = useState({
+    avt: "",
+    studentcode: "",
+    fullName: "",
+    dob: "",
+    gender: "", 
+    email: "",
+    phoneNumber: "",
+  });
+
+  const handleSubmit = async () => {
+    try {
+      await addStudentApi(formData);
+      notification.success({
+        title: "Thành công",
+        description: "Thêm tài khoản thành công!",
+        placement: "topRight",
+      });
+      onClose();
+      onAddSuccess();
+      setFormData({ avt: "", studentcode: "", fullName: "", dob: "", gender: "", email: "", phoneNumber: "" }); 
+    } catch (error) {
+       notification.error({
+        title: "Lỗi",
+        description: "Có lỗi xảy ra khi thêm tài khoản!",
+        placement: "topRight",
+      });
+      console.error(error);
     }
+  };
 
-    const handleSubmit = async () => {
-        setLoading(true)
-        try {
-            const response = await api.post("/Students", form)
-            alert("Thêm sinh viên thành công!")
+  if (!isOpen) return null;
 
-            onAdded(response.data)
-            setForm({ fullName: "", gender: "", address: "", dob: "" })
-            onClose()
-        } catch (err) {
-            console.error(err)
-            alert("Thêm sinh viên thất bại!")
-        } finally {
-            setLoading(false)
-        }
-    }
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+      <h2 className="text-xl font-semibold mb-4">Thêm tài khoản</h2>
 
+      <div className="space-y-4">
+        <Input
+          placeholder="Avatar URL"
+          value={formData.avt}
+          onChange={(e) => setFormData({ ...formData, avt: e.target.value })}
+        />
+        <Input
+          placeholder="Mã sinh viên"
+          value={formData.studentcode}
+          onChange={(e) => setFormData({ ...formData, studentcode: e.target.value })}
+        />
+        <Input
+          placeholder="Họ và tên"
+          value={formData.fullName}
+          onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+        />
+        <Input
+          placeholder="Ngày sinh"
+          type="date"
+          value={formData.dob}
+          onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+        />
+        <Input
+          placeholder="Giới tính"
+          value={formData.gender}
+          onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+        />
+        <Input
+          placeholder="Email"
+          type="email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
+        <Input
+          placeholder="Số điện thoại"
+          value={formData.phoneNumber}
+          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+        />
+      </div>
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <Card className="w-full max-w-md shadow-lg rounded-2xl">
-                <CardHeader className="flex justify-between items-center">
-                    <CardTitle>Thêm sinh viên</CardTitle>
-                    <Button variant="ghost" onClick={onClose} className="text-xl">✕</Button>
-                </CardHeader>
-                <CardContent className="space-y-4">
-
-                    <div className="flex flex-col space-y-1">
-                        <Label>Họ tên</Label>
-                        <Input placeholder="Nhập họ tên" onChange={handleChange}/>
-                    </div>
-
-                    <div className="flex flex-col space-y-1">
-                        <Label>Giới tính</Label>
-                        <Input type="email" placeholder="Nhập giới tính" onChange={handleChange} />
-                    </div>
-
-                    <div className="flex flex-col space-y-1">
-                        <Label>Địa chỉ</Label>
-                        <Input placeholder="Nhập số địa chỉ"  onChange={handleChange}/>
-                    </div>
-
-                    <div className="flex flex-col space-y-1">
-                        <Label>Ngày sinh</Label>
-                        <Input placeholder="ngày sinh"  onChange={handleChange}/>
-                    </div>
-
-                    <div className="flex justify-end gap-2">
-                        <Button variant="outline" onClick={onClose}>Hủy</Button>
-                        <Button onClick={handleSubmit} disabled={loading}>
-                            {loading ? "Đang lưu..." : "Lưu sinh viên"}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-
-    )
+      <div className="flex justify-end mt-6 gap-2">
+        <Button variant="secondary" onClick={onClose}>Hủy</Button>
+        <Button onClick={handleSubmit}>Lưu</Button>
+      </div>
+    </div>
+  </div>
+  );
 }
