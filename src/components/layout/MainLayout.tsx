@@ -10,7 +10,7 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="min-h-screen bg-background">
       <Sidebar />
       <div className="pl-60 transition-all duration-300">
-        <Header currentClass="CACLC4" />
+        <Header avatarUrl="" />
         <main className="p-6">{children}</main>
       </div>
     </div>

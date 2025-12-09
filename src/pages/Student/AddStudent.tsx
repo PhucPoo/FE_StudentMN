@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { notification } from "antd";
+import { notification, Select } from "antd";
 import { getUsers } from "@/service/accountService";
+const { Option } = Select;
 
 interface AddStudentModalProps {
   isOpen: boolean;
@@ -71,8 +72,8 @@ export default function AddStudentModal({
       const payload = {
         ...formData,
         dateOfBirth: formData.dateOfBirth
-        ? new Date(formData.dateOfBirth).toISOString().split("T")[0]
-        : null,
+          ? new Date(formData.dateOfBirth).toISOString().split("T")[0]
+          : null,
       };
       await addStudentApi(payload);
       notification.success({
@@ -111,18 +112,30 @@ export default function AddStudentModal({
             value={formData.studentcode}
             onChange={(e) => setFormData({ ...formData, studentcode: e.target.value })}
           />
-          <select
-            className="w-full p-2 border rounded"
-            value={formData.fullName}
-            onChange={(e) => handleSelectFullName(e.target.value)}
+
+
+          <Select
+            showSearch
+            placeholder="-- Chọn họ và tên --"
+            value={formData.fullName || undefined}
+            onChange={(value) => handleSelectFullName(value)}
+            style={{
+              width: "100%",
+              padding: "0.5rem 0.75rem", 
+              borderRadius: "0.375rem", 
+              border: "1px solid #d1d5db", 
+              backgroundColor: "#fff", 
+              fontSize: "1rem",
+            }}
+
           >
-            <option value="">-- Chọn họ và tên --</option>
             {users.map((u) => (
-              <option key={u.id} value={u.fullName}>
+              <Option key={u.id} value={u.fullName}>
                 {u.fullName}
-              </option>
+              </Option>
             ))}
-          </select>
+          </Select>
+
           <Input
             placeholder="Ngày sinh"
             type="date"
@@ -134,28 +147,45 @@ export default function AddStudentModal({
             value={formData.address}
             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
           />
-          <select
-            className="w-full p-2 border rounded"
-            value={formData.gender}
-            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-          >
-            <option value="">-- Chọn giới tính --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
-          </select>
+          <Select
+            showSearch
+            placeholder="-- Chọn giới tính --"
+            value={formData.gender || undefined}
+            onChange={(value) => setFormData({ ...formData, gender: value })}
+            style={{
+              width: "100%",
+              padding: "0.5rem 0.75rem", 
+              borderRadius: "0.375rem", 
+              border: "1px solid #d1d5db", 
+              backgroundColor: "#fff", 
+              fontSize: "1rem",
+            }}
 
-          <select
-            className="w-full p-2 border rounded"
-            value={formData.email}
-            onChange={(e) => handleSelectEmail(e.target.value)}
           >
-            <option value="">-- Chọn email --</option>
+            <Option value="Nam">Nam</Option>
+            <Option value="Nữ">Nữ</Option>
+          </Select>
+
+          <Select
+            showSearch
+            placeholder="-- Chọn email --"
+            value={formData.email || undefined}
+            onChange={(value) => handleSelectEmail(value)}
+            style={{
+              width: "100%",
+              padding: "0.5rem 0.75rem", 
+              borderRadius: "0.375rem", 
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff", 
+              fontSize: "1rem",
+            }}
+          >
             {users.map((u) => (
-              <option key={u.id} value={u.email}>
+              <Option key={u.id} value={u.email}>
                 {u.email}
-              </option>
+              </Option>
             ))}
-          </select>
+          </Select>
           <Input
             placeholder="Số điện thoại"
             value={formData.phoneNumber}
