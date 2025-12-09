@@ -121,6 +121,7 @@ export default function StudentInfo() {
                   <TableHead>StudentCode</TableHead>
                   <TableHead>FullName</TableHead>
                   <TableHead>DateOfBirth</TableHead>
+                  <TableHead>Address</TableHead>
                   <TableHead>Gender</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>PhoneNumber</TableHead>
@@ -131,10 +132,19 @@ export default function StudentInfo() {
               <TableBody>
                 {students.map((s) => (
                   <TableRow key={s.id} className="hover:bg-muted/50">
-                    <TableCell>{s.avt}</TableCell>
-                    <TableCell>{s.studentcode}</TableCell>
+                    <TableCell><img
+                      src={s.avt} 
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        objectFit: "cover",
+                        borderRadius: "50%", 
+                      }}
+                    /></TableCell>
+                    <TableCell>{s.studentCode}</TableCell>
                     <TableCell>{s.fullName}</TableCell>
-                    <TableCell>{s.dob}</TableCell>
+                    <TableCell>{s.dateOfBirth ? new Date(s.dateOfBirth).toLocaleDateString('vi-VN') : ''}</TableCell>
+                    <TableCell>{s.address}</TableCell>
                     <TableCell>{s.gender}</TableCell>
                     <TableCell>{s.email}</TableCell>
                     <TableCell>{s.phoneNumber}</TableCell>

@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { logout } from "@/service/authService";
+import { notification } from "antd";
 
 interface NavItem {
   icon: React.ElementType;
@@ -38,9 +39,15 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
    const navigate = useNavigate();
 
-   const handleLogout = () => {
-    logout(); // xóa token và header Authorization
-    navigate("/"); // chuyển về LoginPage
+   const handleLogout =async () => {
+    await logout(); 
+    navigate("/"); 
+    notification.success({
+        title: "Thành công",
+        description: "Đăng xuất thành công!",
+        placement: "topRight",
+      });
+
   };
 
   return (

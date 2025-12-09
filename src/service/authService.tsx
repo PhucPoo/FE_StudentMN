@@ -60,7 +60,7 @@ export async function refreshAccessToken() {
     if (res.data.accessToken) {
       setAccessToken(res.data.accessToken);
       if (res.data.refreshToken)
-        setRefreshToken(res.data.refreshToken); // backend có thể trả refresh mới
+        setRefreshToken(res.data.refreshToken); 
       return res.data.accessToken;
 
     }
@@ -70,3 +70,28 @@ export async function refreshAccessToken() {
     return null;
   }
 }
+export async function getCurrentUser() {
+  let token = getAccessToken();
+  if (!token) return null;
+
+  try {
+    const res = await api.get("/auth/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.data.data; 
+  } catch (err) {
+    if (err.response?.status === 401) {
+      
+      token = await refreshAccessToken();
+      if (!token) return null;
+
+      const resRetry = await api.get("/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return resRetry.data.data;
+    } else {
+      throw err;
+    }
+  }
+}
+

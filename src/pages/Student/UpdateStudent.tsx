@@ -20,38 +20,50 @@ export default function UpdateStudentModal({
 }: UpdateStudentModalProps) {
   const [formData, setFormData] = useState({
     avt: "",
-    studentcode: "",
+    studentCode: "",
     fullName: "",
-    dob: "",
-    gender: "", 
+    dateOfBirth: "",
+    gender: "",
+    address: "",
     email: "",
     phoneNumber: "",
+    userId: null,
   });
 
   useEffect(() => {
     if (studentData) {
+      const dob = studentData.dateOfBirth
+        ? new Date(studentData.dateOfBirth).toISOString().split("T")[0]
+        : "";
       setFormData({
         avt: studentData.avt || "",
-        studentcode: studentData.studentcode || "",
+        studentCode: studentData.studentCode || "",
         fullName: studentData.fullName || "",
-        dob: studentData.dob || "",
+        dateOfBirth: dob,
+        address: studentData.address || "",
         gender: studentData.gender || "",
         email: studentData.email || "",
         phoneNumber: studentData.phoneNumber || "",
+        userId: studentData.userId || null,
       });
     }
   }, [studentData, isOpen]);
 
   const handleSubmit = async () => {
     try {
-      // Chỉ gửi các trường có thể chỉnh sửa
-      const updateData = {
-        avt: formData.avt,
-        dob: formData.dob,
-        phoneNumber: formData.phoneNumber,
+      const payload = {
+        Avt: formData.avt,
+        StudentCode: formData.studentCode,
+        FullName: formData.fullName,
+        DateOfBirth: formData.dateOfBirth || null,
+        Gender: formData.gender,
+        Email: formData.email,
+        PhoneNumber: formData.phoneNumber,
+        Address: formData.address,
+        UserId: formData.userId,
       };
 
-      await updateStudentApi(studentData.id, updateData);
+      await updateStudentApi(studentData.id, payload);
 
       notification.success({
         title: "Thành công",
@@ -85,7 +97,7 @@ export default function UpdateStudentModal({
           />
           <Input
             placeholder="Mã sinh viên"
-            value={formData.studentcode}
+            value={formData.studentCode}
             readOnly
             className="bg-gray-100 cursor-not-allowed"
           />
@@ -98,8 +110,8 @@ export default function UpdateStudentModal({
           <Input
             placeholder="Ngày sinh"
             type="date"
-            value={formData.dob}
-            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+            value={formData.dateOfBirth}
+            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
           />
           <Input
             placeholder="Giới tính"

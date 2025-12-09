@@ -7,3 +7,5 @@ export const updateStudents = (id: number, data: any) =>
     headers: { "Content-Type": "application/json" },
   });
 export const deteleStudents = (id:number) => api.delete(`Students/${id}`)
+
+export const getStudentByUserId=(userId: number)  => api.get(`Students/by-user/${userId}`);
