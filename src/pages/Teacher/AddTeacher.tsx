@@ -3,24 +3,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification, Select } from "antd";
 import { getUsers } from "@/service/accountService";
+import { getMajors } from "@/service/majorService";
 const { Option } = Select;
 
-interface AddStudentModalProps {
+interface AddTeacherModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddSuccess: () => void;
-  addStudentApi: (data: any) => Promise<any>;
+  addTeacherApi: (data: any) => Promise<any>;
 }
 
-export default function AddStudentModal({
+export default function AddTeacherModal({
   isOpen,
   onClose,
   onAddSuccess,
-  addStudentApi,
-}: AddStudentModalProps) {
+  addTeacherApi,
+}: AddTeacherModalProps) {
   const [formData, setFormData] = useState({
     avt: "",
-    studentcode: "",
+    teachercode: "",
     fullName: "",
     dateOfBirth: "",
     address: "",
@@ -28,8 +29,10 @@ export default function AddStudentModal({
     email: "",
     phoneNumber: "",
     userId: null,
+    majorId: null,
   });
   const [users, setUsers] = useState<any[]>([]);
+  const [majors, setMajors] = useState<any[]>([]);
 
   const [page] = useState(1);
   const [pageSize] = useState(50);
@@ -37,12 +40,17 @@ export default function AddStudentModal({
 
   useEffect(() => {
     fetchUsers();
+    fetchMajors();
   }, []);
 
   const fetchUsers = async () => {
     const res = await getUsers(page, pageSize, search);
-    const filteredUsers = res.data.data.filter((u: any) => u.roleId === 2);
+    const filteredUsers = res.data.data.filter((u: any) => u.roleId === 3);
     setUsers(filteredUsers);
+  };
+  const fetchMajors = async () => {
+    const res = await getMajors(page, pageSize, search);
+    setMajors(res.data.data);
   };
 
   const handleSelectFullName = (fullName: string) => {
@@ -53,8 +61,15 @@ export default function AddStudentModal({
       fullName,
       email: selected?.email || "",
       userId: selected?.id || null,
+      majorId: selected?.majorId || null,
     });
   };
+  const handleSelectMajor = (id: number | string) => {
+  setFormData(prev => ({
+    ...prev,
+    majorId: Number(id),
+  }));
+};
 
   const handleSelectEmail = (email: string) => {
     const selected = users.find((u) => u.email === email);
@@ -64,6 +79,7 @@ export default function AddStudentModal({
       email,
       fullName: selected?.fullName || "",
       userId: selected?.id || null,
+        majorId: selected?.majorId || null,
     });
   };
 
@@ -71,23 +87,25 @@ export default function AddStudentModal({
     try {
       const payload = {
         ...formData,
+        majorId: formData.majorId,
         dateOfBirth: formData.dateOfBirth
           ? new Date(formData.dateOfBirth).toISOString().split("T")[0]
           : null,
       };
-      await addStudentApi(payload);
+      
+      await addTeacherApi(payload);
       notification.success({
         title: "Thành công",
-        description: "Thêm tài khoản thành công!",
+        description: "Thêm giảng viên thành công!",
         placement: "topRight",
       });
       onClose();
       onAddSuccess();
-      setFormData({ avt: "", studentcode: "", fullName: "", dateOfBirth: "", address: "", gender: "", email: "", phoneNumber: "", userId: null });
+      setFormData({ avt: "", teachercode: "", fullName: "", dateOfBirth: "", address: "", gender: "", email: "", phoneNumber: "", userId: null, majorId: null });
     } catch (error) {
       notification.error({
         title: "Lỗi",
-        description: "Có lỗi xảy ra khi thêm tài khoản!",
+        description: "Có lỗi xảy ra khi thêm giảng viên!",
         placement: "topRight",
       });
       console.error(error);
@@ -95,7 +113,7 @@ export default function AddStudentModal({
   };
 
   if (!isOpen) return null;
-
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
@@ -108,15 +126,15 @@ export default function AddStudentModal({
             onChange={(e) => setFormData({ ...formData, avt: e.target.value })}
           />
           <Input
-            placeholder="Mã sinh viên"
-            value={formData.studentcode}
-            onChange={(e) => setFormData({ ...formData, studentcode: e.target.value })}
+            placeholder="Mã giảng viên"
+            value={formData.teachercode}
+            onChange={(e) => setFormData({ ...formData, teachercode: e.target.value })}
           />
 
 
           <Select
             showSearch
-            placeholder="-- Chọn họ và tên --"
+            placeholder=" Chọn họ và tên "
             value={formData.fullName || undefined}
             onChange={(value) => handleSelectFullName(value)}
             style={{
@@ -149,7 +167,7 @@ export default function AddStudentModal({
           />
           <Select
             showSearch
-            placeholder="-- Chọn giới tính --"
+            placeholder=" Chọn giới tính "
             value={formData.gender || undefined}
             onChange={(value) => setFormData({ ...formData, gender: value })}
             style={{
@@ -168,7 +186,7 @@ export default function AddStudentModal({
 
           <Select
             showSearch
-            placeholder="-- Chọn email --"
+            placeholder=" Chọn email "
             value={formData.email || undefined}
             onChange={(value) => handleSelectEmail(value)}
             style={{
@@ -191,6 +209,27 @@ export default function AddStudentModal({
             value={formData.phoneNumber}
             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
           />
+          <Select
+            showSearch
+            placeholder=" Chọn chuyên ngành "
+            value={formData.majorId || undefined}
+            onChange={(value) => handleSelectMajor(value)}
+            style={{
+              width: "100%",
+              padding: "0.5rem 0.75rem", 
+              borderRadius: "0.375rem", 
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff", 
+              fontSize: "1rem",
+            }}
+          >
+            {majors.map((m) => (
+              <Option key={m.id} value={m.majorId}>
+                {m.majorName}
+              </Option>
+            ))}
+          </Select>
+          
         </div>
 
         <div className="flex justify-end mt-6 gap-2">
