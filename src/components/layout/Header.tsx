@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { UserProfile } from "@/pages/Profile";
+import { UserProfile } from "@/pages/Profile/Profile";
 import { getCurrentUser } from "@/service/authService";
 import { getStudentByUserId } from "@/service/studentService";
 import { useEffect, useState } from "react";

@@ -62,7 +62,6 @@ export default function LoginForm({ onLogin }) {
       </a>
     </div>
 
-    {/* Error message */}
     {error && <p className="text-red-500 text-sm">{error}</p>}
 
     {/* Submit button */}

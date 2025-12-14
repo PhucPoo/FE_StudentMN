@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-
 import LoginForm from "./Login";
 import { login } from "@/service/authService";
 
@@ -7,8 +6,20 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const handleLogin = async (credentials) => {
-    await login(credentials);
-    navigate("/dashboard"); // chuyển sang dashboard sau khi login
+    const res = await login(credentials); // ⬅️ nhận response
+
+    if (!res?.success) return;
+
+    const { user } = res;
+
+    // 🔥 Điều hướng theo role
+    if (user.role === "Admin") {
+      navigate("/dashboard");
+    } else if (user.role === "Student") {
+      navigate("/student");
+    } else {
+      navigate("/"); 
+    }
   };
 
   return <LoginForm onLogin={handleLogin} />;

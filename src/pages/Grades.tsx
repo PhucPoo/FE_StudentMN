@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StudentLayout } from "@/components/layout/StudentLayout";
 
 const grades = [
   { id: "SV001", name: "Nguyễn Văn A", subject: "Toán cao cấp", midterm: 8.5, final: 7.5, avg: 7.9 },
@@ -25,7 +26,7 @@ const grades = [
 
 export default function Grades() {
   return (
-    <MainLayout>
+    <StudentLayout>
       <div className="space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Bảng điểm sinh viên</h1>
 
@@ -80,6 +81,6 @@ export default function Grades() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+    </StudentLayout>
   );
 }
