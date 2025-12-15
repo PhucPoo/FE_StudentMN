@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Edit, Eye, Plus, Search, Trash2 } from "lucide-react";
 import { Table } from "@/components/ui/table";
 import { Pagination, Modal, notification } from 'antd';
 import { addTeachers, deteleTeachers, getTeachers, updateTeachers } from "@/service/teacherService";
@@ -12,12 +12,14 @@ import AddTeacher from "./AddTeacher";
 import UpdateTeacher from "./UpdateTeacher";
 import { getMajors } from "@/service/majorService";
 import { set } from "date-fns";
+import DetailTeacher from "./DetailTeacher";
 
 export default function TeacherInfo() {
   const [Teachers, setTeachers] = useState([]);
-    const [majors, setMajors] = useState<any[]>([]);
+  const [majors, setMajors] = useState<any[]>([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [openDetail, setOpenDetail] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
 
   const [page, setPage] = useState(1);
@@ -29,9 +31,9 @@ export default function TeacherInfo() {
   const loadTeachers = async (page: number) => {
     try {
       const res = await getTeachers(page, pageSize, search);
-        const resMajors = await getMajors(page,pageSize, search);
-        
-        setMajors(resMajors.data.data);
+      const resMajors = await getMajors(page, pageSize, search);
+
+      setMajors(resMajors.data.data);
       setTeachers(res.data.data);
       setTotalTeachers(res.data.totalCount);
     } catch (error) {
@@ -84,7 +86,7 @@ export default function TeacherInfo() {
       default: return "Khác";
     }
   };
- console.log(majors);
+  console.log(majors);
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -139,14 +141,14 @@ export default function TeacherInfo() {
                 {Teachers.map((t) => (
                   <TableRow key={t.id} className="hover:bg-muted/50">
                     <TableCell><img
-                      src={t.avt} 
+                      src={t.avt}
                       style={{
                         width: "50px",
                         height: "50px",
                         objectFit: "cover",
-                        borderRadius: "50%", 
+                        borderRadius: "50%",
                       }}
-                      
+
                     /></TableCell>
                     <TableCell>{t.teacherCode}</TableCell>
                     <TableCell>{t.fullName}</TableCell>
@@ -167,6 +169,17 @@ export default function TeacherInfo() {
                         title="Chỉnh sửa"
                       >
                         <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedTeacher(t);
+                          setOpenDetail(true);
+                        }}
+                        title="Xem chi tiết"
+                      >
+                        <Eye className="h-4 w-4" />
                       </Button>
 
                       <Button
@@ -207,6 +220,11 @@ export default function TeacherInfo() {
           onClose={() => setOpenUpdate(false)}
           onUpdateSuccess={() => loadTeachers(page)}
           updateTeacherApi={updateTeachers}
+          teacherData={selectedTeacher}
+        />
+        <DetailTeacher
+          isOpen={openDetail}
+          onClose={() => setOpenDetail(false)}
           teacherData={selectedTeacher}
         />
       </div>

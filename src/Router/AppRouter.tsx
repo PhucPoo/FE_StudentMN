@@ -5,6 +5,8 @@ import Grades from "@/pages/Grades";
 import LoginPage from "@/pages/LoginPage/LoginPage";
 import MajorList from "@/pages/Major/MajorList";
 import NotFound from "@/pages/NotFound";
+import DecentralizationPage from "@/pages/Permission/DecentralizationPage";
+import PermissionList from "@/pages/Permission/PermissionList";
 import Profile from "@/pages/Profile/Profile";
 import StudentInfo from "@/pages/Student/StudentInfo";
 import TeacherList from "@/pages/Teacher/TeacherList";
@@ -20,6 +22,8 @@ const AppRouter = () => {
 
         {/* Admin */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/permission-list" element={<PermissionList />} />
+        <Route path="/decentralization" element={<DecentralizationPage />} />
         <Route path="/account" element={<AccountList />} />
         <Route path="/major" element={<MajorList />} />
         <Route path="/teacher-info" element={<TeacherList />} />

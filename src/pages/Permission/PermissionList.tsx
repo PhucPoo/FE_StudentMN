@@ -7,58 +7,57 @@ import { useEffect, useState } from "react";
 import { Edit, Eye, Plus, Search, Trash2 } from "lucide-react";
 import { Table } from "@/components/ui/table";
 import { Pagination, Modal, notification } from 'antd';
-import { addStudents, deteleStudents, getStudents, updateStudents } from "@/service/studentService";
-import AddStudent from "./AddStudent";
-import UpdateStudent from "./UpdateStudent";
-import DetailStudent from "./DetailStudent";
+import { addPermissions, detelePermissions, getPermissions, updatePermissions } from "@/service/permissionService";
+import AddPermission from "./AddPermission";
+import UpdatePermission from "./UpdatePermission";
 
-export default function StudentInfo() {
-  const [students, setStudents] = useState([]);
+
+export default function PermissionList() {
+  const [permissions, setPermissions] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedPermission, setSelectedPermission] = useState(null);
 
   const [page, setPage] = useState(1);
   const [pageSize] = useState(8);
-  const [totalStudents, setTotalStudents] = useState(0);
+  const [totalPermissions, setTotalPermissions] = useState(0);
   const [search, setSearch] = useState("");
 
 
-  const loadStudents = async (page: number) => {
+  const loadPermissions = async (page: number) => {
     try {
-      const res = await getStudents(page, pageSize, search);
+      const res = await getPermissions();
 
-      setStudents(res.data.data);
-      setTotalStudents(res.data.totalCount);
+      setPermissions(res.data.data);
+      setTotalPermissions(res.data.totalCount);
     } catch (error) {
-      console.log("Lỗi load student:", error);
+      console.log("Lỗi load Permission:", error);
     }
   };
 
   useEffect(() => {
-    loadStudents(page);
+    loadPermissions(page);
   }, [page]);
 
-  const handleDelete = async (student: any) => {
+  const handleDelete = async (permission: any) => {
     Modal.confirm({
-      title: `Bạn có chắc muốn xóa ${student.studentname}?`,
+      title: `Bạn có chắc muốn xóa ${permission.permissionname}?`,
       okText: "Xóa",
       cancelText: "Hủy",
       okType: "danger",
       onOk: async () => {
         try {
-          await deteleStudents(student.id);
+          await detelePermissions(permission.id);
           notification.success({
             title: "Thành công",
-            description: `Xóa ${student.studentname} thành công!`,
+            description: `Xóa ${permission.permissionname} thành công!`,
             placement: "topRight",
           });
-          loadStudents(page);
+          loadPermissions(page);
         } catch (error) {
           notification.error({
             title: "Lỗi",
-            description: `Xóa ${student.studentname} thất bại!`,
+            description: `Xóa ${permission.permissionname} thất bại!`,
             placement: "topRight",
           });
         }
@@ -66,30 +65,22 @@ export default function StudentInfo() {
       onCancel: () => {
         notification.info({
           title: "Hủy",
-          description: `Bạn đã hủy xóa ${student.studentname}.`,
+          description: `Bạn đã hủy xóa ${permission.permissionname}.`,
           placement: "topRight",
         });
       },
     });
   };
 
-  const getRoleName = (roleId: number) => {
-    switch (roleId) {
-      case 1: return "Admin";
-      case 2: return "Sinh viên";
-      case 3: return "Giảng viên";
-      default: return "Khác";
-    }
-  };
 
   return (
     <MainLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-foreground">Quản lí sinh viên</h1>
+          <h1 className="text-2xl font-semibold text-foreground">Quản lí quyền</h1>
           <Button onClick={() => setOpenAdd(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Thêm sinh viên
+            Thêm quyền
           </Button>
         </div>
 
@@ -98,7 +89,7 @@ export default function StudentInfo() {
             <div className="relative w-full max-w-xs">
               <div className="relative w-full max-w-xs">
                 <Input
-                  placeholder="Tìm kiếm tài khoản..."
+                  placeholder="Tìm kiếm quyền..."
                   className="pl-10 h-11 rounded-xl shadow-sm"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -107,7 +98,7 @@ export default function StudentInfo() {
                   className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground cursor-pointer"
                   onClick={() => {
                     setPage(1);
-                    loadStudents(1);
+                    loadPermissions(1);
                   }}
                 />
               </div>
@@ -119,65 +110,35 @@ export default function StudentInfo() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>AVT</TableHead>
-                  <TableHead>StudentCode</TableHead>
-                  <TableHead>FullName</TableHead>
-                  <TableHead>DateOfBirth</TableHead>
-                  <TableHead>Address</TableHead>
-                  <TableHead>Gender</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>PhoneNumber</TableHead>
+                  <TableHead>PermissionName</TableHead>
+                  <TableHead>Desciption</TableHead>
                   <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {students.map((s) => (
-                  <TableRow key={s.id} className="hover:bg-muted/50">
-                    <TableCell><img
-                      src={s.avt}
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        objectFit: "cover",
-                        borderRadius: "50%",
-                      }}
-                    /></TableCell>
-                    <TableCell>{s.studentCode}</TableCell>
-                    <TableCell>{s.fullName}</TableCell>
-                    <TableCell>{s.dateOfBirth ? new Date(s.dateOfBirth).toLocaleDateString('vi-VN') : ''}</TableCell>
-                    <TableCell>{s.address}</TableCell>
-                    <TableCell>{s.gender}</TableCell>
-                    <TableCell>{s.email}</TableCell>
-                    <TableCell>{s.phoneNumber}</TableCell>
+                {permissions.map((q) => (
+                  <TableRow key={q.id} className="hover:bg-muted/50">
+                    <TableCell>{q.permissionName}</TableCell>
+                    <TableCell>{q.description}</TableCell>
+                    
                     <TableCell className="flex gap-2">
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          setSelectedStudent(s);
+                          setSelectedPermission(q);
                           setOpenUpdate(true);
                         }}
                         title="Chỉnh sửa"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
+                      
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
-                          setSelectedStudent(s);
-                          setOpenDetail(true);
-                        }}
-                        title="Xem chi tiết"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(s)}
+                        onClick={() => handleDelete(q)}
                         title="Xóa"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -191,7 +152,7 @@ export default function StudentInfo() {
             <Pagination
               current={page}
               pageSize={pageSize}
-              total={totalStudents}
+              total={totalPermissions}
               onChange={(page) => setPage(page)}
               showSizeChanger={false}
               className="mt-4"
@@ -200,25 +161,21 @@ export default function StudentInfo() {
           </CardContent>
         </Card>
 
-        <AddStudent
+        <AddPermission
           isOpen={openAdd}
           onClose={() => setOpenAdd(false)}
-          onAddSuccess={() => loadStudents(page)}
-          addStudentApi={addStudents}
+          onAddSuccess={() => loadPermissions(page)}
+          addPermissionApi={addPermissions}
         />
 
-        <UpdateStudent
+        <UpdatePermission
           isOpen={openUpdate}
           onClose={() => setOpenUpdate(false)}
-          onUpdateSuccess={() => loadStudents(page)}
-          updateStudentApi={updateStudents}
-          studentData={selectedStudent}
+          onUpdateSuccess={() => loadPermissions(page)}
+          updatePermissionApi={updatePermissions}
+          permissionData={selectedPermission}
         />
-        <DetailStudent
-          isOpen={openDetail}
-          onClose={() => setOpenDetail(false)}
-          studentData={selectedStudent}
-        />
+        
       </div>
     </MainLayout>
   );

@@ -28,7 +28,6 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: Home, label: "Trang chủ", path: "/" },
   { icon: LayoutDashboard, label: "Home", path: "/student" },
 
 

@@ -16,6 +16,7 @@ import {
   GraduationCap,
   Layers,
   BookOpen,
+  ShieldIcon,
 } from "lucide-react";
 import { logout } from "@/service/authService";
 import { notification } from "antd";
@@ -28,12 +29,18 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: Home, label: "Trang chủ", path: "/" },
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  // { icon: MessageSquare, label: "Tin nhắn", path: "/messages" },
-  { icon: GraduationCap,label:"Quản lý lớp học",path:"/class"},
-  { icon: Layers,label:"Quản lý chuyên khoa",path:"/major"},
-  { icon: BookOpen,label:"Quản lý môn học",path:"/subject"},
+  {
+    icon: ShieldIcon,
+    label: "Quản lý quyền",
+    children: [
+      { icon: UserCircle, label: "Danh sách quyền", path: "/permission-list" },
+      { icon: User, label: "Phân quyền", path: "/decentralization" },
+    ],
+  },
+  { icon: GraduationCap, label: "Quản lý lớp học", path: "/class" },
+  { icon: Layers, label: "Quản lý chuyên khoa", path: "/major" },
+  { icon: BookOpen, label: "Quản lý môn học", path: "/subject" },
   { icon: Users, label: "Quản lí tài khoản", path: "/account" },
 
   {
@@ -118,7 +125,7 @@ export function Sidebar() {
 
                     {/* Submenu */}
                     {isOpen && !collapsed && (
-                      <ul className=" mt-1 space-y-1">
+                      <ul className="mt-1 space-y-1 pl-4"> 
                         {item.children?.map((sub) => (
                           <li key={`${item.label}-${sub.label}`}>
                             <NavLink
@@ -138,6 +145,7 @@ export function Sidebar() {
                           </li>
                         ))}
                       </ul>
+
                     )}
                   </>
                 ) : (
