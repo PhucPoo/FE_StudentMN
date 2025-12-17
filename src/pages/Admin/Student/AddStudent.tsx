@@ -3,20 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification, Select } from "antd";
 import { getUsers } from "@/service/accountService";
+import { addStudents } from "@/service/studentService";
 const { Option } = Select;
 
 interface AddStudentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddSuccess: () => void;
-  addStudentApi: (data: any) => Promise<any>;
 }
 
 export default function AddStudentModal({
   isOpen,
   onClose,
   onAddSuccess,
-  addStudentApi,
 }: AddStudentModalProps) {
   const [formData, setFormData] = useState({
     avt: "",
@@ -75,7 +74,7 @@ export default function AddStudentModal({
           ? new Date(formData.dateOfBirth).toISOString().split("T")[0]
           : null,
       };
-      await addStudentApi(payload);
+      await addStudents(payload);
       notification.success({
         title: "Thành công",
         description: "Thêm tài khoản thành công!",

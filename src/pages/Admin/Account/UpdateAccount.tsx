@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification } from "antd";
+import { updateUsers } from "@/service/accountService";
 
 interface UpdateAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdateSuccess: () => void;
-  updateAccountApi: (id: number, data: any) => Promise<any>;
   userData: any;
 }
 
@@ -15,7 +15,6 @@ export default function UpdateAccountModal({
   isOpen,
   onClose,
   onUpdateSuccess,
-  updateAccountApi,
   userData,
 }: UpdateAccountModalProps) {
   const [formData, setFormData] = useState({
@@ -43,7 +42,7 @@ export default function UpdateAccountModal({
 
   const handleSubmit = async () => {
     try {
-      await updateAccountApi(userData.id, {
+      await updateUsers(userData.id, {
         username: formData.username,
         roleId: formData.roleId,
         isActive: formData.isActive,

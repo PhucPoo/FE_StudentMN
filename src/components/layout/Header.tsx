@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { UserProfile } from "@/pages/Profile/Profile";
 import { getCurrentUser } from "@/service/authService";
 import { getStudentByUserId } from "@/service/studentService";
 import { useEffect, useState } from "react";
@@ -12,7 +10,7 @@ interface HeaderProps {
 }
 
 export function Header({ avatarUrl }: HeaderProps) {
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [currentUser, setCurrentUser] = useState<Profile | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {

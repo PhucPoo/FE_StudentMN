@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification } from "antd";
+import { updateMajors } from "@/service/majorService";
 
 interface UpdateMajorModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdateSuccess: () => void;
-  updateMajorApi: (id: number, data: any) => Promise<any>;
   MajorData: any;
 }
 
@@ -15,7 +15,6 @@ export default function UpdateMajorModal({
   isOpen,
   onClose,
   onUpdateSuccess,
-  updateMajorApi,
   MajorData,
 }: UpdateMajorModalProps) {
   const [formData, setFormData] = useState({
@@ -39,7 +38,7 @@ export default function UpdateMajorModal({
         Desciption: formData.desciption,
       };
 
-      await updateMajorApi(MajorData.id, payload);
+      await updateMajors(MajorData.id, payload);
 
       notification.success({
         title: "Thành công",

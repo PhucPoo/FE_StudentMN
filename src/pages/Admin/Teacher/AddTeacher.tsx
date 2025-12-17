@@ -4,20 +4,19 @@ import { Input } from "@/components/ui/input";
 import { notification, Select } from "antd";
 import { getUsers } from "@/service/accountService";
 import { getMajors } from "@/service/majorService";
+import { addTeachers } from "@/service/teacherService";
 const { Option } = Select;
 
 interface AddTeacherModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddSuccess: () => void;
-  addTeacherApi: (data: any) => Promise<any>;
 }
 
 export default function AddTeacherModal({
   isOpen,
   onClose,
   onAddSuccess,
-  addTeacherApi,
 }: AddTeacherModalProps) {
   const [formData, setFormData] = useState({
     avt: "",
@@ -93,7 +92,7 @@ export default function AddTeacherModal({
           : null,
       };
       
-      await addTeacherApi(payload);
+      await addTeachers(payload);
       notification.success({
         title: "Thành công",
         description: "Thêm giảng viên thành công!",

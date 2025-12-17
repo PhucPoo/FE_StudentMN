@@ -4,60 +4,59 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { Edit, Eye, Plus, Search, Trash2 } from "lucide-react";
+import { Edit, Plus, Search, Trash2 } from "lucide-react";
 import { Table } from "@/components/ui/table";
 import { Pagination, Modal, notification } from 'antd';
-import { addPermissions, detelePermissions, getPermissions, updatePermissions } from "@/service/permissionService";
-import AddPermission from "./AddPermission";
-import UpdatePermission from "./UpdatePermission";
+import { addMajors, deteleMajors, getMajors, updateMajors } from "@/service/majorService";
+import AddMajor from "./AddMajor";
+import UpdateMajor from "./UpdateMajor";
 
-
-export default function PermissionList() {
-  const [permissions, setPermissions] = useState([]);
+export default function MajorInfo() {
+  const [Majors, setMajors] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [selectedPermission, setSelectedPermission] = useState(null);
+  const [selectedMajor, setSelectedMajor] = useState(null);
 
   const [page, setPage] = useState(1);
   const [pageSize] = useState(8);
-  const [totalPermissions, setTotalPermissions] = useState(0);
+  const [totalMajors, setTotalMajors] = useState(0);
   const [search, setSearch] = useState("");
 
 
-  const loadPermissions = async (page: number) => {
+  const loadMajors = async (page: number) => {
     try {
-      const res = await getPermissions();
+      const res = await getMajors(page, pageSize, search);
 
-      setPermissions(res.data.data);
-      setTotalPermissions(res.data.totalCount);
+      setMajors(res.data.data);
+      setTotalMajors(res.data.totalCount);
     } catch (error) {
-      console.log("Lỗi load Permission:", error);
+      console.log("Lỗi load Major:", error);
     }
   };
 
   useEffect(() => {
-    loadPermissions(page);
+    loadMajors(page);
   }, [page]);
 
-  const handleDelete = async (permission: any) => {
+  const handleDelete = async (Major: any) => {
     Modal.confirm({
-      title: `Bạn có chắc muốn xóa ${permission.permissionname}?`,
+      title: `Bạn có chắc muốn xóa ${Major.Majorname}?`,
       okText: "Xóa",
       cancelText: "Hủy",
       okType: "danger",
       onOk: async () => {
         try {
-          await detelePermissions(permission.id);
+          await deteleMajors(Major.id);
           notification.success({
             title: "Thành công",
-            description: `Xóa ${permission.permissionname} thành công!`,
+            description: `Xóa ${Major.Majorname} thành công!`,
             placement: "topRight",
           });
-          loadPermissions(page);
+          loadMajors(page);
         } catch (error) {
           notification.error({
             title: "Lỗi",
-            description: `Xóa ${permission.permissionname} thất bại!`,
+            description: `Xóa ${Major.Majorname} thất bại!`,
             placement: "topRight",
           });
         }
@@ -65,7 +64,7 @@ export default function PermissionList() {
       onCancel: () => {
         notification.info({
           title: "Hủy",
-          description: `Bạn đã hủy xóa ${permission.permissionname}.`,
+          description: `Bạn đã hủy xóa ${Major.Majorname}.`,
           placement: "topRight",
         });
       },
@@ -77,10 +76,10 @@ export default function PermissionList() {
     <MainLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-foreground">Quản lí quyền</h1>
+          <h1 className="text-2xl font-semibold text-foreground">Quản lí chuyên ngành</h1>
           <Button onClick={() => setOpenAdd(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Thêm quyền
+            Thêm chuyên ngành
           </Button>
         </div>
 
@@ -89,7 +88,7 @@ export default function PermissionList() {
             <div className="relative w-full max-w-xs">
               <div className="relative w-full max-w-xs">
                 <Input
-                  placeholder="Tìm kiếm quyền..."
+                  placeholder="Tìm kiếm chuyên ngành..."
                   className="pl-10 h-11 rounded-xl shadow-sm"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -98,7 +97,7 @@ export default function PermissionList() {
                   className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground cursor-pointer"
                   onClick={() => {
                     setPage(1);
-                    loadPermissions(1);
+                    loadMajors(1);
                   }}
                 />
               </div>
@@ -110,35 +109,34 @@ export default function PermissionList() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>PermissionName</TableHead>
+                  <TableHead>MajorName</TableHead>
                   <TableHead>Desciption</TableHead>
-                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {permissions.map((q) => (
-                  <TableRow key={q.id} className="hover:bg-muted/50">
-                    <TableCell>{q.permissionName}</TableCell>
-                    <TableCell>{q.description}</TableCell>
+                {Majors.map((m) => (
+                  <TableRow key={m.id} className="hover:bg-muted/50">
                     
+                    <TableCell>{m.majorName}</TableCell>
+                    <TableCell>{m.description}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          setSelectedPermission(q);
+                          setSelectedMajor(m);
                           setOpenUpdate(true);
                         }}
                         title="Chỉnh sửa"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      
+
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDelete(q)}
+                        onClick={() => handleDelete(m)}
                         title="Xóa"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -152,7 +150,7 @@ export default function PermissionList() {
             <Pagination
               current={page}
               pageSize={pageSize}
-              total={totalPermissions}
+              total={totalMajors}
               onChange={(page) => setPage(page)}
               showSizeChanger={false}
               className="mt-4"
@@ -161,21 +159,18 @@ export default function PermissionList() {
           </CardContent>
         </Card>
 
-        <AddPermission
+        <AddMajor
           isOpen={openAdd}
           onClose={() => setOpenAdd(false)}
-          onAddSuccess={() => loadPermissions(page)}
-          addPermissionApi={addPermissions}
+          onAddSuccess={() => loadMajors(page)}
         />
 
-        <UpdatePermission
+        <UpdateMajor
           isOpen={openUpdate}
           onClose={() => setOpenUpdate(false)}
-          onUpdateSuccess={() => loadPermissions(page)}
-          updatePermissionApi={updatePermissions}
-          permissionData={selectedPermission}
+          onUpdateSuccess={() => loadMajors(page)}
+          MajorData={selectedMajor}
         />
-        
       </div>
     </MainLayout>
   );

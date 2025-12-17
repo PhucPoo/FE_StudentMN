@@ -23,16 +23,35 @@ export default function DecentralizationPage() {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getRolePermissions();
-        setRoles(res.data);
-      } catch (error) {
-        notification.error({ title: "Lỗi", description: "Không tải được dữ liệu quyền" });
-      }
-    };
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    try {
+      const res = await getRolePermissions();
+
+      const normalizedRoles = res.data.map((role: RolePermissions) => {
+        if (role.roleName.toLowerCase() === "admin") {
+          return {
+            ...role,
+            permissions: role.permissions.map((p) => ({
+              ...p,
+              isAssigned: true,
+            })),
+          };
+        }
+        return role;
+      });
+
+      setRoles(normalizedRoles);
+    } catch (error) {
+      notification.error({
+        title: "Lỗi",
+        description: "Không tải được dữ liệu quyền",
+      });
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   const toggleMenu = (roleId: number) => {
     setOpenMenu(openMenu === roleId ? null : roleId);

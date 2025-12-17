@@ -2,19 +2,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {  notification } from "antd";
+import { addUsers } from "@/service/accountService";
 
 interface AddAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddSuccess: () => void;
-  addAccountApi: (data: any) => Promise<any>;
 }
 
 export default function AddAccountModal({
   isOpen,
   onClose,
   onAddSuccess,
-  addAccountApi,
 }: AddAccountModalProps) {
   const [formData, setFormData] = useState({
     username: "",
@@ -26,7 +25,7 @@ export default function AddAccountModal({
 
   const handleSubmit = async () => {
     try {
-      await addAccountApi(formData);
+      await addUsers(formData);
       notification.success({
         title: "Thành công",
         description: "Thêm tài khoản thành công!",

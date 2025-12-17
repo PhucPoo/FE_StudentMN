@@ -2,25 +2,24 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification } from "antd";
+import { updateTeachers } from "@/service/teacherService";
 
-interface UpdateStudentModalProps {
+interface UpdateTeacherModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdateSuccess: () => void;
-  updateStudentApi: (id: number, data: any) => Promise<any>;
-  studentData: any;
+  teacherData: any;
 }
 
-export default function UpdateStudentModal({
+export default function UpdateteacherModal({
   isOpen,
   onClose,
   onUpdateSuccess,
-  updateStudentApi,
-  studentData,
-}: UpdateStudentModalProps) {
+  teacherData,
+}: UpdateTeacherModalProps) {
   const [formData, setFormData] = useState({
     avt: "",
-    studentCode: "",
+    teacherCode: "",
     fullName: "",
     dateOfBirth: "",
     gender: "",
@@ -31,29 +30,29 @@ export default function UpdateStudentModal({
   });
 
   useEffect(() => {
-    if (studentData) {
-      const dob = studentData.dateOfBirth
-        ? new Date(studentData.dateOfBirth).toISOString().split("T")[0]
+    if (teacherData) {
+      const dob = teacherData.dateOfBirth
+        ? new Date(teacherData.dateOfBirth).toISOString().split("T")[0]
         : "";
       setFormData({
-        avt: studentData.avt || "",
-        studentCode: studentData.studentCode || "",
-        fullName: studentData.fullName || "",
+        avt: teacherData.avt || "",
+        teacherCode: teacherData.teacherCode || "",
+        fullName: teacherData.fullName || "",
         dateOfBirth: dob,
-        address: studentData.address || "",
-        gender: studentData.gender || "",
-        email: studentData.email || "",
-        phoneNumber: studentData.phoneNumber || "",
-        userId: studentData.userId || null,
+        address: teacherData.address || "",
+        gender: teacherData.gender || "",
+        email: teacherData.email || "",
+        phoneNumber: teacherData.phoneNumber || "",
+        userId: teacherData.userId || null,
       });
     }
-  }, [studentData, isOpen]);
+  }, [teacherData, isOpen]);
 
   const handleSubmit = async () => {
     try {
       const payload = {
         Avt: formData.avt,
-        StudentCode: formData.studentCode,
+        teacherCode: formData.teacherCode,
         FullName: formData.fullName,
         DateOfBirth: formData.dateOfBirth || null,
         Gender: formData.gender,
@@ -63,11 +62,11 @@ export default function UpdateStudentModal({
         UserId: formData.userId,
       };
 
-      await updateStudentApi(studentData.id, payload);
+      await updateTeachers(teacherData.id, payload);
 
       notification.success({
         title: "Thành công",
-        description: "Cập nhật sinh viên thành công!",
+        description: "Cập nhật giảng viên thành công!",
         placement: "topRight",
       });
       onClose();
@@ -75,7 +74,7 @@ export default function UpdateStudentModal({
     } catch (error) {
       notification.error({
         title: "Lỗi",
-        description: "Cập nhật sinh viên thất bại!",
+        description: "Cập nhật giảng viên thất bại!",
         placement: "topRight",
       });
       console.error(error);
@@ -87,7 +86,7 @@ export default function UpdateStudentModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-        <h2 className="text-xl font-semibold mb-4">Chỉnh sửa sinh viên</h2>
+        <h2 className="text-xl font-semibold mb-4">Chỉnh sửa giảng viên</h2>
 
         <div className="space-y-4">
           <Input
@@ -96,8 +95,8 @@ export default function UpdateStudentModal({
             onChange={(e) => setFormData({ ...formData, avt: e.target.value })}
           />
           <Input
-            placeholder="Mã sinh viên"
-            value={formData.studentCode}
+            placeholder="Mã giảng viên"
+            value={formData.teacherCode}
             readOnly
             className="bg-gray-100 cursor-not-allowed"
           />

@@ -73,15 +73,6 @@ export default function StudentInfo() {
     });
   };
 
-  const getRoleName = (roleId: number) => {
-    switch (roleId) {
-      case 1: return "Admin";
-      case 2: return "Sinh viên";
-      case 3: return "Giảng viên";
-      default: return "Khác";
-    }
-  };
-
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -204,14 +195,12 @@ export default function StudentInfo() {
           isOpen={openAdd}
           onClose={() => setOpenAdd(false)}
           onAddSuccess={() => loadStudents(page)}
-          addStudentApi={addStudents}
         />
 
         <UpdateStudent
           isOpen={openUpdate}
           onClose={() => setOpenUpdate(false)}
           onUpdateSuccess={() => loadStudents(page)}
-          updateStudentApi={updateStudents}
           studentData={selectedStudent}
         />
         <DetailStudent

@@ -1,16 +1,17 @@
-import AccountList from "@/pages/Account/AccountList";
 import Dashboard from "@/pages/Dashboard";
 import DatabaseManagement from "@/pages/DatabaseManagement";
 import Grades from "@/pages/Grades";
 import LoginPage from "@/pages/LoginPage/LoginPage";
-import MajorList from "@/pages/Major/MajorList";
+import MajorList from "@/pages/Admin/Major/MajorList";
 import NotFound from "@/pages/NotFound";
-import DecentralizationPage from "@/pages/Permission/DecentralizationPage";
-import PermissionList from "@/pages/Permission/PermissionList";
+import DecentralizationPage from "@/pages/Admin/Permission/DecentralizationPage";
+import PermissionList from "@/pages/Admin/Permission/PermissionList";
 import Profile from "@/pages/Profile/Profile";
-import StudentInfo from "@/pages/Student/StudentInfo";
-import TeacherList from "@/pages/Teacher/TeacherList";
+import StudentInfo from "@/pages/Admin/Student/StudentInfo";
+import TeacherList from "@/pages/Admin/Teacher/TeacherList";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AccountList from "@/pages/Admin/Account/AccountList";
+import ClassList from "@/pages/Admin/Class/ClassList";
 
 
 
@@ -24,6 +25,7 @@ const AppRouter = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/permission-list" element={<PermissionList />} />
         <Route path="/decentralization" element={<DecentralizationPage />} />
+        <Route path="/class" element={<ClassList />} />
         <Route path="/account" element={<AccountList />} />
         <Route path="/major" element={<MajorList />} />
         <Route path="/teacher-info" element={<TeacherList />} />

@@ -177,14 +177,12 @@ export default function AccountList() {
           isOpen={openAdd}
           onClose={() => setOpenAdd(false)}
           onAddSuccess={() => loadUsers(page)}
-          addAccountApi={addUsers}
         />
 
         <UpdateAccount
           isOpen={openUpdate}
           onClose={() => setOpenUpdate(false)}
           onUpdateSuccess={() => loadUsers(page)}
-          updateAccountApi={updateUsers}
           userData={selectedUser}
         />
       </div>

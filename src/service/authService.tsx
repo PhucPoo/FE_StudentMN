@@ -3,7 +3,6 @@ import api, { refreshApi } from "./api";
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
 
-// ================== TOKEN STORAGE ==================
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
@@ -25,7 +24,6 @@ export function logout() {
   localStorage.removeItem(REFRESH_TOKEN_KEY);
 }
 
-// ================== LOGIN ==================
 export async function login({ username, password }) {
   try {
     const res = await api.post("/auth/login", { username, password });
@@ -44,7 +42,6 @@ export async function login({ username, password }) {
   }
 }
 
-// ================== REFRESH TOKEN ==================
 export async function refreshAccessToken() {
   const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
@@ -66,12 +63,11 @@ export async function refreshAccessToken() {
   }
 }
 
-// ================== GET CURRENT USER ==================
 export async function getCurrentUser() {
   try {
     const res = await api.get("/auth/me");
     return res.data.data;
   } catch {
-    return null; // nếu 401 → interceptor tự refresh hoặc logout
+    return null; 
   }
 }

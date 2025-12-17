@@ -1,48 +1,59 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { notification, Select } from "antd";
-import { getUsers } from "@/service/accountService";
-const { Option } = Select;
+import { notification } from "antd";
+import { permission } from "process";
+import { updatePermissions } from "@/service/permissionService";
 
-interface AddPermissionModalProps {
+interface UpdatePermissionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddSuccess: () => void;
-  addPermissionApi: (data: any) => Promise<any>;
+  onUpdateSuccess: () => void;
+  permissionData: any;
 }
 
-export default function AddPermissionModal({
+export default function UpdatePermissionModal({
   isOpen,
   onClose,
-  onAddSuccess,
-  addPermissionApi,
-}: AddPermissionModalProps) {
+  onUpdateSuccess,
+  permissionData,
+}: UpdatePermissionModalProps) {
   const [formData, setFormData] = useState({
     permissionname: "",
     description: "",
   });
+
+  useEffect(() => {
+    if (permissionData) {
+      setFormData({
+        permissionname: permissionData.permissionname || "",
+        description: permissionData.description || "",
+      });
+    }
+  }, [permissionData, isOpen]);
+
   const handleSubmit = async () => {
     try {
       const payload = {
-        ...formData,
+        permissionname: formData.permissionname,
+        description: formData.description,
       };
-      await addPermissionApi(payload);
+
+      await updatePermissions(permissionData.id, payload);
+
       notification.success({
         title: "Thành công",
-        description: "Thêm quyền thành công!",
+        description: "Cập nhật quyền thành công!",
         placement: "topRight",
       });
       onClose();
-      onAddSuccess();
-      setFormData({permissionname: "", description: ""});
+      onUpdateSuccess();
     } catch (error) {
       notification.error({
         title: "Lỗi",
-        description: "Có lỗi xảy ra khi thêm quyền!",
+        description: "Cập nhật quyền thất bại!",
         placement: "topRight",
       });
-      console.error(error);
     }
   };
 
@@ -51,13 +62,12 @@ export default function AddPermissionModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-        <h2 className="text-xl font-semibold mb-4">Thêm tài khoản</h2>
+        <h2 className="text-xl font-semibold mb-4">Chỉnh sửa quyền</h2>
 
         <div className="space-y-4">
-   
+         
           <Input
             placeholder="Tên quyền"
-            type="text"
             value={formData.permissionname}
             onChange={(e) => setFormData({ ...formData, permissionname: e.target.value })}
           />
@@ -66,11 +76,13 @@ export default function AddPermissionModal({
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
-        
+          
         </div>
 
         <div className="flex justify-end mt-6 gap-2">
-          <Button variant="secondary" onClick={onClose}>Hủy</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Hủy
+          </Button>
           <Button onClick={handleSubmit}>Lưu</Button>
         </div>
       </div>

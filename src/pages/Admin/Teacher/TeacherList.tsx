@@ -78,14 +78,6 @@ export default function TeacherInfo() {
     });
   };
 
-  const getRoleName = (roleId: number) => {
-    switch (roleId) {
-      case 1: return "Admin";
-      case 2: return "Sinh viên";
-      case 3: return "Giảng viên";
-      default: return "Khác";
-    }
-  };
   console.log(majors);
   return (
     <MainLayout>
@@ -212,14 +204,12 @@ export default function TeacherInfo() {
           isOpen={openAdd}
           onClose={() => setOpenAdd(false)}
           onAddSuccess={() => loadTeachers(page)}
-          addTeacherApi={addTeachers}
         />
 
         <UpdateTeacher
           isOpen={openUpdate}
           onClose={() => setOpenUpdate(false)}
           onUpdateSuccess={() => loadTeachers(page)}
-          updateTeacherApi={updateTeachers}
           teacherData={selectedTeacher}
         />
         <DetailTeacher

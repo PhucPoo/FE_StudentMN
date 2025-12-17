@@ -2,19 +2,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification } from "antd";
+import { addMajors } from "@/service/majorService";
 
 interface AddMajorModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddSuccess: () => void;
-  addMajorApi: (data: any) => Promise<any>;
 }
 
 export default function AddMajorModal({
   isOpen,
   onClose,
   onAddSuccess,
-  addMajorApi,
 }: AddMajorModalProps) {
   const [formData, setFormData] = useState({
     majorName: "",
@@ -37,7 +36,7 @@ export default function AddMajorModal({
         Description: formData.description,
       };
 
-      await addMajorApi(payload);
+      await addMajors(payload);
 
       notification.success({
         title: "Thành công",
