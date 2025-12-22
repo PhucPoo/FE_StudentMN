@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { notification } from "antd";
+import { notification, Select } from "antd";
 import { updateStudents } from "@/service/studentService";
+import { Class } from "@/lib/interface";
+import { getClasses } from "@/service/classService";
+const { Option } = Select;
 
 interface UpdateStudentModalProps {
   isOpen: boolean;
@@ -17,6 +20,10 @@ export default function UpdateStudentModal({
   onUpdateSuccess,
   studentData,
 }: UpdateStudentModalProps) {
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [page] = useState(1);
+  const [pageSize] = useState(50);
+  const [search] = useState("");
   const [formData, setFormData] = useState({
     avt: "",
     studentCode: "",
@@ -24,10 +31,20 @@ export default function UpdateStudentModal({
     dateOfBirth: "",
     gender: "",
     address: "",
-    email: "",
+    course: "",
     phoneNumber: "",
     userId: null,
+    classId: null,
   });
+  useEffect(() => {
+      fetchClasses();
+    }, []);
+  
+   
+    const fetchClasses = async () => {
+      const res = await getClasses(page, pageSize, search);
+      setClasses(res.data.data); // Lấy tất cả lớp
+    };
 
   useEffect(() => {
     if (studentData) {
@@ -37,13 +54,14 @@ export default function UpdateStudentModal({
       setFormData({
         avt: studentData.avt || "",
         studentCode: studentData.studentCode || "",
-        fullName: studentData.fullName || "",
+        fullName: studentData.user.fullName || "",
         dateOfBirth: dob,
         address: studentData.address || "",
         gender: studentData.gender || "",
-        email: studentData.email || "",
+        course: studentData.course || "",
         phoneNumber: studentData.phoneNumber || "",
         userId: studentData.userId || null,
+        classId: studentData.classId || null,
       });
     }
   }, [studentData, isOpen]);
@@ -56,10 +74,11 @@ export default function UpdateStudentModal({
         FullName: formData.fullName,
         DateOfBirth: formData.dateOfBirth || null,
         Gender: formData.gender,
-        Email: formData.email,
+        Course: formData.course,
         PhoneNumber: formData.phoneNumber,
         Address: formData.address,
         UserId: formData.userId,
+        ClassId: formData.classId,
       };
 
       await updateStudents(studentData.id, payload);
@@ -82,7 +101,9 @@ export default function UpdateStudentModal({
   };
 
   if (!isOpen) return null;
-
+  const handleSelectClass = (classId: string) => {
+    setFormData({ ...formData, classId });
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
@@ -119,9 +140,8 @@ export default function UpdateStudentModal({
             className="bg-gray-100 cursor-not-allowed"
           />
           <Input
-            placeholder="Email"
-            type="email"
-            value={formData.email}
+            placeholder="Course"
+            value={formData.course}
             readOnly
             className="bg-gray-100 cursor-not-allowed"
           />
@@ -130,6 +150,26 @@ export default function UpdateStudentModal({
             value={formData.phoneNumber}
             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
           />
+          <Select
+            showSearch
+            placeholder="-- Chọn lớp --"
+            value={formData.classId || undefined}
+            onChange={(value) => handleSelectClass(value)}
+            style={{
+              width: "100%",
+              padding: "0.5rem 0.75rem",
+              borderRadius: "0.375rem",
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff",
+              fontSize: "1rem",
+            }}
+          >
+            {classes.map((cls) => (
+              <Option key={cls.id} value={cls.id}>
+                {cls.id}
+              </Option>
+            ))}
+          </Select>
         </div>
 
         <div className="flex justify-end mt-6 gap-2">

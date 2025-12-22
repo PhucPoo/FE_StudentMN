@@ -8,4 +8,5 @@ export const updateStudents = (id: number, data: any) =>
   });
 export const deteleStudents = (id:number) => api.delete(`Students/${id}`)
 
-export const getStudentByUserId=(userId: number)  => api.get(`Students/by-user/${userId}`);
+export const getStudentByClass=(classId: number, config?: any)  => api.get(`Students/export/class/${classId}`, config);
+export const getStudentById=(id: number)  => api.get(`Students/by-id/${id}`);

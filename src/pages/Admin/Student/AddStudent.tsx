@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { notification, Select } from "antd";
 import { getUsers } from "@/service/accountService";
 import { addStudents } from "@/service/studentService";
+import { Class, User } from "@/lib/interface";
+import { getClasses } from "@/service/classService";
 const { Option } = Select;
 
 interface AddStudentModalProps {
@@ -24,11 +26,13 @@ export default function AddStudentModal({
     dateOfBirth: "",
     address: "",
     gender: "",
-    email: "",
+    course: "",
     phoneNumber: "",
     userId: null,
+    classId: null,
   });
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
 
   const [page] = useState(1);
   const [pageSize] = useState(50);
@@ -36,6 +40,7 @@ export default function AddStudentModal({
 
   useEffect(() => {
     fetchUsers();
+    fetchClasses();
   }, []);
 
   const fetchUsers = async () => {
@@ -43,14 +48,20 @@ export default function AddStudentModal({
     const filteredUsers = res.data.data.filter((u: any) => u.roleId === 2);
     setUsers(filteredUsers);
   };
+  const fetchClasses = async () => {
+    const res = await getClasses(page, pageSize, search);
+    setClasses(res.data.data); // Lấy tất cả lớp
+  };
 
+  const handleSelectClass = (classId: string) => {
+    setFormData({ ...formData, classId });
+  };
   const handleSelectFullName = (fullName: string) => {
     const selected = users.find((u) => u.fullName === fullName);
 
     setFormData({
       ...formData,
       fullName,
-      email: selected?.email || "",
       userId: selected?.id || null,
     });
   };
@@ -60,7 +71,6 @@ export default function AddStudentModal({
 
     setFormData({
       ...formData,
-      email,
       fullName: selected?.fullName || "",
       userId: selected?.id || null,
     });
@@ -82,7 +92,7 @@ export default function AddStudentModal({
       });
       onClose();
       onAddSuccess();
-      setFormData({ avt: "", studentcode: "", fullName: "", dateOfBirth: "", address: "", gender: "", email: "", phoneNumber: "", userId: null });
+      setFormData({ avt: "", studentcode: "", fullName: "", dateOfBirth: "", address: "", gender: "", course: "", phoneNumber: "", userId: null, classId: null });
     } catch (error) {
       notification.error({
         title: "Lỗi",
@@ -120,10 +130,10 @@ export default function AddStudentModal({
             onChange={(value) => handleSelectFullName(value)}
             style={{
               width: "100%",
-              padding: "0.5rem 0.75rem", 
-              borderRadius: "0.375rem", 
-              border: "1px solid #d1d5db", 
-              backgroundColor: "#fff", 
+              padding: "0.5rem 0.75rem",
+              borderRadius: "0.375rem",
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff",
               fontSize: "1rem",
             }}
 
@@ -153,10 +163,10 @@ export default function AddStudentModal({
             onChange={(value) => setFormData({ ...formData, gender: value })}
             style={{
               width: "100%",
-              padding: "0.5rem 0.75rem", 
-              borderRadius: "0.375rem", 
-              border: "1px solid #d1d5db", 
-              backgroundColor: "#fff", 
+              padding: "0.5rem 0.75rem",
+              borderRadius: "0.375rem",
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff",
               fontSize: "1rem",
             }}
 
@@ -165,31 +175,37 @@ export default function AddStudentModal({
             <Option value="Nữ">Nữ</Option>
           </Select>
 
-          <Select
-            showSearch
-            placeholder="-- Chọn email --"
-            value={formData.email || undefined}
-            onChange={(value) => handleSelectEmail(value)}
-            style={{
-              width: "100%",
-              padding: "0.5rem 0.75rem", 
-              borderRadius: "0.375rem", 
-              border: "1px solid #d1d5db",
-              backgroundColor: "#fff", 
-              fontSize: "1rem",
-            }}
-          >
-            {users.map((u) => (
-              <Option key={u.id} value={u.email}>
-                {u.email}
-              </Option>
-            ))}
-          </Select>
+          <Input
+            placeholder="Khóa"
+            value={formData.course}
+            onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+          />
+
           <Input
             placeholder="Số điện thoại"
             value={formData.phoneNumber}
             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
           />
+          <Select
+            showSearch
+            placeholder="-- Chọn lớp --"
+            value={formData.classId || undefined}
+            onChange={(value) => handleSelectClass(value)}
+            style={{
+              width: "100%",
+              padding: "0.5rem 0.75rem",
+              borderRadius: "0.375rem",
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff",
+              fontSize: "1rem",
+            }}
+          >
+            {classes.map((cls) => (
+              <Option key={cls.id} value={cls.id}>
+                {cls.className}
+              </Option>
+            ))}
+          </Select>
         </div>
 
         <div className="flex justify-end mt-6 gap-2">

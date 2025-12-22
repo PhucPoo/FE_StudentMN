@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/service/authService";
-import { getStudentByUserId } from "@/service/studentService";
+import { getStudentById } from "@/service/studentService";
 import ProfileAdmin from "./ProfileAdmin";
 import ProfileStudent from "./ProfileStudent";
 
@@ -12,7 +12,7 @@ export default function Profile() {
       const current = await getCurrentUser();
 
       if (current.role === "Student") {
-        const student = await getStudentByUserId(current.id);
+        const student = await getStudentById(current.id);
         setUser({ ...current, ...student.data.data });
       } else {
         setUser(current);

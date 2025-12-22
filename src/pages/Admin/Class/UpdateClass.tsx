@@ -19,15 +19,19 @@ export default function UpdateClassModal({
   ClassData,
 }: UpdateClassModalProps) {
   const [formData, setFormData] = useState({
-    Classname: "",
-    desciption: "",
+    className: "",
+    courseYear: "",
+    teacher:null,
+    major:null,
   });
 
   useEffect(() => {
     if (ClassData) {
       setFormData({
-        Classname: ClassData.Classname || "",
-        desciption: ClassData.desciption || "",
+        className: ClassData.className || "",
+        courseYear: ClassData.courseYear || "",
+        teacher:ClassData.teacher || null,
+        major:ClassData.major || null,
       });
     }
   }, [ClassData, isOpen]);
@@ -35,15 +39,18 @@ export default function UpdateClassModal({
   const handleSubmit = async () => {
     try {
       const payload = {
-        ClassName: formData.Classname,
-        Desciption: formData.desciption,
+        ClassName: formData.className,
+        CourseYear: formData.courseYear,
+        TeacherId: formData.teacher,
+        MajorId: formData.major,
       };
+       
 
       await updateClasses(ClassData.id, payload);
 
       notification.success({
         title: "Thành công",
-        description: "Cập nhật chuyên ngành thành công!",
+        description: "Cập nhật lớp học thành công!",
         placement: "topRight",
       });
       onClose();
@@ -51,7 +58,7 @@ export default function UpdateClassModal({
     } catch (error) {
       notification.error({
         title: "Lỗi",
-        description: "Cập nhật chuyên ngành thất bại!",
+        description: "Cập nhật lớp học thất bại!",
         placement: "topRight",
       });
       console.error(error);
@@ -59,7 +66,8 @@ export default function UpdateClassModal({
   };
 
   if (!isOpen) return null;
-
+ 
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
@@ -68,15 +76,26 @@ export default function UpdateClassModal({
         <div className="space-y-4">
           <Input
             placeholder="tên chuyên ngành"
-            value={formData.Classname}
-            onChange={(e) => setFormData({ ...formData, Classname: e.target.value })}
+            value={formData.className}
+            onChange={(e) => setFormData({ ...formData, className: e.target.value })}
           />
           <Input
-            placeholder="Mô tả"
-            value={formData.desciption}
-            onChange={(e) => setFormData({ ...formData, desciption: e.target.value })}
+            placeholder="Khóa học"
+            value={formData.courseYear}
+            onChange={(e) => setFormData({ ...formData, courseYear: e.target.value })}
           />
-          
+          <Input
+            placeholder="Giáo viên"
+            value={formData.teacher?.user?.fullName ?? ""}
+            readOnly
+            className="bg-gray-100 cursor-not-allowed"
+          />
+          <Input
+            placeholder="Chuyên ngành"
+            value={formData.major?.majorName ?? ""}
+            readOnly
+            className="bg-gray-100 cursor-not-allowed"
+          />
         </div>
 
         <div className="flex justify-end mt-6 gap-2">

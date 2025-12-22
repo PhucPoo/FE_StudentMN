@@ -11,7 +11,6 @@ import { addTeachers, deteleTeachers, getTeachers, updateTeachers } from "@/serv
 import AddTeacher from "./AddTeacher";
 import UpdateTeacher from "./UpdateTeacher";
 import { getMajors } from "@/service/majorService";
-import { set } from "date-fns";
 import DetailTeacher from "./DetailTeacher";
 
 export default function TeacherInfo() {
@@ -143,11 +142,11 @@ export default function TeacherInfo() {
 
                     /></TableCell>
                     <TableCell>{t.teacherCode}</TableCell>
-                    <TableCell>{t.fullName}</TableCell>
+                    <TableCell>{t.user.fullName}</TableCell>
                     <TableCell>{t.dateOfBirth ? new Date(t.dateOfBirth).toLocaleDateString('vi-VN') : ''}</TableCell>
                     <TableCell>{t.address}</TableCell>
                     <TableCell>{t.gender}</TableCell>
-                    <TableCell>{t.email}</TableCell>
+                    <TableCell>{t.user.email}</TableCell>
                     <TableCell>{t.phoneNumber}</TableCell>
                     <TableCell>{majors.find((m) => m.id === t.majorId)?.majorName || ""}</TableCell>
                     <TableCell className="flex gap-2">

@@ -13,6 +13,10 @@ import UpdateClassModal from "./UpdateClass";
 import { Class, Major, Teacher } from "@/lib/interface";
 import { getMajors } from "@/service/majorService";
 import { getTeachers } from "@/service/teacherService";
+import { saveAs } from "file-saver";
+import { getStudentByClass } from "@/service/studentService";
+
+
 
 
 export default function ClassList() {
@@ -41,19 +45,32 @@ export default function ClassList() {
             console.log("Lỗi load Class:", error);
         }
     };
-      const loadMajors = async () => {
+    const loadMajors = async () => {
         try {
-            const res = await getMajors(page, pageSize, search); 
+            const res = await getMajors(page, pageSize, search);
             setMajors(res.data.data);
         } catch (error) {
             console.log("Lỗi load majors", error);
+        }
+    };
+    const handleExportExcel = async (classId: number) => {
+        try {
+            const res = await getStudentByClass(classId,{ responseType: 'blob' });
+
+            const blob = new Blob([res.data], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            });
+
+            saveAs(blob, `Danh_sach_sinh_vien_lop_${classId}.xlsx`);
+        } catch (error) {
+            console.error("Lỗi xuất Excel:", error);
         }
     };
 
     // Load Teachers
     const loadTeachers = async () => {
         try {
-            const res = await getTeachers(page, pageSize, search); 
+            const res = await getTeachers(page, pageSize, search);
             setTeachers(res.data.data);
         } catch (error) {
             console.log("Lỗi load teachers", error);
@@ -150,8 +167,8 @@ export default function ClassList() {
 
                                         <TableCell>{cls.className}</TableCell>
                                         <TableCell>{cls.courseYear}</TableCell>
-                                        <TableCell>{cls.major.majorName}</TableCell>
                                         <TableCell>{cls.teacher.user.fullName}</TableCell>
+                                        <TableCell>{cls.major.majorName}</TableCell>
                                         <TableCell className="flex gap-2">
                                             <Button
                                                 variant="ghost"
@@ -172,6 +189,14 @@ export default function ClassList() {
                                                 title="Xóa"
                                             >
                                                 <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleExportExcel(cls.id)}
+                                                title="Xuất Excel"
+                                            >
+                                                📄
                                             </Button>
                                         </TableCell>
                                     </TableRow>

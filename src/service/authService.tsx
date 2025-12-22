@@ -1,27 +1,28 @@
 import api, { refreshApi } from "./api";
+import Cookies from 'js-cookie';
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
 
 export function getAccessToken() {
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+  return Cookies.get(ACCESS_TOKEN_KEY);
 }
 export function setAccessToken(token) {
-  if (token) localStorage.setItem(ACCESS_TOKEN_KEY, token);
-  else localStorage.removeItem(ACCESS_TOKEN_KEY);
+  if (token) Cookies.set(ACCESS_TOKEN_KEY, token, { expires: 1 }); 
+  else Cookies.remove(ACCESS_TOKEN_KEY);
 }
 
 export function getRefreshToken() {
-  return localStorage.getItem(REFRESH_TOKEN_KEY);
+  return Cookies.get(REFRESH_TOKEN_KEY);
 }
 export function setRefreshToken(token) {
-  if (token) localStorage.setItem(REFRESH_TOKEN_KEY, token);
-  else localStorage.removeItem(REFRESH_TOKEN_KEY);
+  if (token) Cookies.set(REFRESH_TOKEN_KEY, token, { expires: 7 }); 
+  else Cookies.remove(REFRESH_TOKEN_KEY);
 }
 
 export function logout() {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
+  Cookies.remove(ACCESS_TOKEN_KEY);
+  Cookies.remove(REFRESH_TOKEN_KEY);
 }
 
 export async function login({ username, password }) {

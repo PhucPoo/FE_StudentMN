@@ -1,9 +1,9 @@
 import { getCurrentUser } from "@/service/authService";
-import { getStudentByUserId } from "@/service/studentService";
 import { useEffect, useState } from "react";
 import { Avatar, Dropdown, Menu, notification } from "antd";
 import { SettingOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { getStudentById } from "@/service/studentService";
 
 interface HeaderProps {
   avatarUrl?: string;
@@ -18,7 +18,7 @@ export function Header({ avatarUrl }: HeaderProps) {
       try {
         const user = await getCurrentUser();
         if (user.role === "Student") {
-          const student = await getStudentByUserId(user.id);
+          const student = await getStudentById(user.id);
           user.avt = student.data.data.avt;
         }
         setCurrentUser(user);

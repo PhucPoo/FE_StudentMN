@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Edit, Eye, Plus, Search, Trash2 } from "lucide-react";
 import { Table } from "@/components/ui/table";
 import { Pagination, Modal, notification } from 'antd';
-import { addStudents, deteleStudents, getStudents, updateStudents } from "@/service/studentService";
+import {  deteleStudents, getStudentByClass, getStudents } from "@/service/studentService";
 import AddStudent from "./AddStudent";
 import UpdateStudent from "./UpdateStudent";
 import DetailStudent from "./DetailStudent";
@@ -116,8 +116,9 @@ export default function StudentInfo() {
                   <TableHead>DateOfBirth</TableHead>
                   <TableHead>Address</TableHead>
                   <TableHead>Gender</TableHead>
-                  <TableHead>Email</TableHead>
+                  <TableHead>Course</TableHead>
                   <TableHead>PhoneNumber</TableHead>
+                  <TableHead>Class</TableHead>
                   <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -135,12 +136,13 @@ export default function StudentInfo() {
                       }}
                     /></TableCell>
                     <TableCell>{s.studentCode}</TableCell>
-                    <TableCell>{s.fullName}</TableCell>
+                    <TableCell>{s.user.fullName}</TableCell>
                     <TableCell>{s.dateOfBirth ? new Date(s.dateOfBirth).toLocaleDateString('vi-VN') : ''}</TableCell>
                     <TableCell>{s.address}</TableCell>
                     <TableCell>{s.gender}</TableCell>
-                    <TableCell>{s.email}</TableCell>
+                    <TableCell>{s.course}</TableCell>
                     <TableCell>{s.phoneNumber}</TableCell>
+                    <TableCell>{s.class?.className || ''}</TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         variant="ghost"
@@ -173,6 +175,7 @@ export default function StudentInfo() {
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
+                      
                     </TableCell>
                   </TableRow>
                 ))}

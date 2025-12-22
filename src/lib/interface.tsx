@@ -100,11 +100,13 @@ export interface Student {
     fullName?: string | null;
     dateOfBirth: string;
     gender?: string | null;
-    email?: string | null;
+    course?: string | null;
     phoneNumber?: string | null;
     address?: string | null;
     userId: number;
     user?: User | null;
+    classId: number;
+    class?: Class | null;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;

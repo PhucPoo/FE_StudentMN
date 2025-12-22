@@ -1,3 +1,4 @@
+import { Student } from "@/lib/interface";
 import { Modal, Descriptions } from "antd";
 import { useEffect, useState } from "react";
 
@@ -7,7 +8,7 @@ interface DetailStudentProps {
   studentData: any; 
 }
 export default function DetailStudent({ isOpen, onClose, studentData }: DetailStudentProps) {
-  const [student, setStudent] = useState<any>(null);
+  const [student, setStudent] = useState<Student>(null);
 
   useEffect(() => {
     if (studentData) {
@@ -38,8 +39,9 @@ export default function DetailStudent({ isOpen, onClose, studentData }: DetailSt
           </Descriptions.Item>
           <Descriptions.Item label="Address">{student.address}</Descriptions.Item>
           <Descriptions.Item label="Gender">{student.gender}</Descriptions.Item>
-          <Descriptions.Item label="Email">{student.email}</Descriptions.Item>
+          <Descriptions.Item label="Course">{student.course}</Descriptions.Item>
           <Descriptions.Item label="PhoneNumber">{student.phoneNumber}</Descriptions.Item>
+          <Descriptions.Item label="Class">{student.class?.className}</Descriptions.Item>
         </Descriptions>
       ) : null}
     </Modal>
