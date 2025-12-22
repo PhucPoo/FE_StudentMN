@@ -111,13 +111,14 @@ export default function MajorInfo() {
                 <TableRow>
                   <TableHead>MajorName</TableHead>
                   <TableHead>Desciption</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 {Majors.map((m) => (
                   <TableRow key={m.id} className="hover:bg-muted/50">
-                    
+
                     <TableCell>{m.majorName}</TableCell>
                     <TableCell>{m.description}</TableCell>
                     <TableCell className="flex gap-2">

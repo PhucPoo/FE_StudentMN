@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification } from "antd";
 import { updateMajors } from "@/service/majorService";
+import { Major } from "@/lib/interface";
 
 interface UpdateMajorModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdateSuccess: () => void;
-  MajorData: any;
+  MajorData: Major;
 }
 
 export default function UpdateMajorModal({
@@ -18,15 +19,15 @@ export default function UpdateMajorModal({
   MajorData,
 }: UpdateMajorModalProps) {
   const [formData, setFormData] = useState({
-    majorname: "",
-    desciption: "",
+    majorName: "",
+    description: "",
   });
 
   useEffect(() => {
     if (MajorData) {
       setFormData({
-        majorname: MajorData.majorname || "",
-        desciption: MajorData.desciption || "",
+        majorName: MajorData.majorName || "",
+        description: MajorData.description || "",
       });
     }
   }, [MajorData, isOpen]);
@@ -34,8 +35,8 @@ export default function UpdateMajorModal({
   const handleSubmit = async () => {
     try {
       const payload = {
-        MajorName: formData.majorname,
-        Desciption: formData.desciption,
+        MajorName: formData.majorName,
+        Description: formData.description,
       };
 
       await updateMajors(MajorData.id, payload);
@@ -67,13 +68,13 @@ export default function UpdateMajorModal({
         <div className="space-y-4">
           <Input
             placeholder="tên chuyên ngành"
-            value={formData.majorname}
-            onChange={(e) => setFormData({ ...formData, majorname: e.target.value })}
+            value={formData.majorName}
+            onChange={(e) => setFormData({ ...formData, majorName: e.target.value })}
           />
           <Input
             placeholder="Mô tả"
-            value={formData.desciption}
-            onChange={(e) => setFormData({ ...formData, desciption: e.target.value })}
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
           
         </div>

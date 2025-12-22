@@ -33,7 +33,7 @@ export default function DetailStudent({ isOpen, onClose, studentData }: DetailSt
             />
           </Descriptions.Item>
           <Descriptions.Item label="StudentCode">{student.studentCode}</Descriptions.Item>
-          <Descriptions.Item label="FullName">{student.fullName}</Descriptions.Item>
+          <Descriptions.Item label="FullName">{student.user.fullName}</Descriptions.Item>
           <Descriptions.Item label="DateOfBirth">
             {student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString('vi-VN') : ''}
           </Descriptions.Item>

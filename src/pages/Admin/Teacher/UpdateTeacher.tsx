@@ -37,11 +37,11 @@ export default function UpdateteacherModal({
       setFormData({
         avt: teacherData.avt || "",
         teacherCode: teacherData.teacherCode || "",
-        fullName: teacherData.fullName || "",
+        fullName: teacherData.user.fullName || "",
         dateOfBirth: dob,
         address: teacherData.address || "",
         gender: teacherData.gender || "",
-        email: teacherData.email || "",
+        email: teacherData.user.email || "",
         phoneNumber: teacherData.phoneNumber || "",
         userId: teacherData.userId || null,
       });

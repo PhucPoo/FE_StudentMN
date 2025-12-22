@@ -32,13 +32,13 @@ export default function DetailTeacher({ isOpen, onClose, teacherData }: DetailTe
             />
           </Descriptions.Item>
           <Descriptions.Item label="TeacherCode">{teacher.teacherCode}</Descriptions.Item>
-          <Descriptions.Item label="FullName">{teacher.fullName}</Descriptions.Item>
+          <Descriptions.Item label="FullName">{teacher.user.fullName}</Descriptions.Item>
           <Descriptions.Item label="DateOfBirth">
             {teacher.dateOfBirth ? new Date(teacher.dateOfBirth).toLocaleDateString('vi-VN') : ''}
           </Descriptions.Item>
           <Descriptions.Item label="Address">{teacher.address}</Descriptions.Item>
           <Descriptions.Item label="Gender">{teacher.gender}</Descriptions.Item>
-          <Descriptions.Item label="Email">{teacher.email}</Descriptions.Item>
+          <Descriptions.Item label="Email">{teacher.user.email}</Descriptions.Item>
           <Descriptions.Item label="PhoneNumber">{teacher.phoneNumber}</Descriptions.Item>
         </Descriptions>
       ) : null}

@@ -158,6 +158,7 @@ export default function ClassList() {
                                     <TableHead>CourseYear</TableHead>
                                     <TableHead>Teacher</TableHead>
                                     <TableHead>Major</TableHead>
+                                    <TableHead>Action</TableHead>
                                 </TableRow>
                             </TableHeader>
 
@@ -182,14 +183,14 @@ export default function ClassList() {
                                                 <Edit className="h-4 w-4" />
                                             </Button>
 
-                                            <Button
+                                            {/* <Button
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleDelete(cls)}
                                                 title="Xóa"
                                             >
                                                 <Trash2 className="h-4 w-4" />
-                                            </Button>
+                                            </Button> */}
                                             <Button
                                                 variant="ghost"
                                                 size="icon"

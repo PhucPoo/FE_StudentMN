@@ -10,7 +10,7 @@ interface HeaderProps {
 }
 
 export function Header({ avatarUrl }: HeaderProps) {
-  const [currentUser, setCurrentUser] = useState<Profile | null>(null);
+  const [currentUser, setCurrentUser] = useState<any | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
