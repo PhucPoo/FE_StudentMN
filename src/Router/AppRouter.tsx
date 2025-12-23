@@ -15,6 +15,7 @@ import ClassList from "@/pages/Admin/Class/ClassList";
 import DashboardStudent from "@/pages/Admin/Student/dashboardStudent";
 import DashboardTeacher from "@/pages/Admin/Teacher/dashboardTeacher";
 import ClassListByTeacher from "@/pages/Admin/Teacher/managerClassByTeacher";
+import SubjectList from "@/pages/Subject/SubjectList";
 
 
 
@@ -31,9 +32,11 @@ const AppRouter = () => {
         <Route path="/class" element={<ClassList />} />
         <Route path="/account" element={<AccountList />} />
         <Route path="/major" element={<MajorList />} />
+        <Route path="/subject" element={<SubjectList />} />
         <Route path="/teacher-info" element={<TeacherList />} />
         <Route path="/database" element={<DatabaseManagement />} />
         <Route path="/student-info" element={<StudentInfo />} />
+
 
          {/* Student */}
         <Route path="/student" element={<DashboardStudent />} />

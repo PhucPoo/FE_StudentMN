@@ -2,33 +2,29 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { getCurrentUser } from "@/service/authService";
-import { getStudentById, getStudents, updateStudents } from "@/service/studentService";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { notification } from "antd";
 import { StudentLayout } from "@/components/layout/StudentLayout";
+import { getCurrentUser } from "@/service/authService";
+import { getStudents, updateStudents } from "@/service/studentService";
 import { Student } from "@/lib/interface";
 
 export default function ProfileStudent() {
-    const [formData, setFormData] = useState<Student | null>(null);
+    const [student, setStudent] = useState<Student | null>(null);
+    const [originStudent, setOriginStudent] = useState<Student | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [page] = useState(1);
-    const [pageSize] = useState(50);
-    const [search] = useState("");
 
     useEffect(() => {
         async function fetchStudent() {
             try {
-                setLoading(true);
-
                 const currentUser = await getCurrentUser();
+                const res = await getStudents(1, 50, "");
+                const found = res.data.data.find(
+                    (s: Student) => s.userId === currentUser.id
+                );
 
-                const studentsRes = await getStudents(page, pageSize, search);
-
-                const student = studentsRes.data.data.find(s => s.userId === currentUser.id);
-
-                if (!student) {
+                if (!found) {
                     notification.error({
                         title: "Lỗi",
                         description: "Không tìm thấy dữ liệu sinh viên",
@@ -36,10 +32,9 @@ export default function ProfileStudent() {
                     return;
                 }
 
-                setFormData(student);
-
+                setStudent(found);
+                setOriginStudent(found);
             } catch (error) {
-                console.error(error);
                 notification.error({
                     title: "Lỗi",
                     description: "Không thể lấy dữ liệu sinh viên",
@@ -47,118 +42,167 @@ export default function ProfileStudent() {
             } finally {
                 setLoading(false);
             }
-
         }
 
         fetchStudent();
     }, []);
 
-    if (loading) return <p>Loading student...</p>;
-    if (!formData) return <p>Không tìm thấy dữ liệu sinh viên</p>;
+    if (loading) return <p>Loading...</p>;
+    if (!student) return <p>Không có dữ liệu</p>;
 
     const handleChange = (key: keyof Student, value: any) => {
-        setFormData({ ...formData, [key]: value });
+        setStudent({ ...student, [key]: value });
     };
 
     const handleSave = async () => {
         try {
-            await updateStudents(formData.id, {
-                userId: formData.userId,
-                studentCode: formData.studentCode,
-                fullName: formData.user.fullName,
-                email: formData.user.email,
-                phoneNumber: formData.phoneNumber,
-                avt: formData.avt,
-                gender: formData.gender,
-                address: formData.address,
+            await updateStudents(student.id, {
+                userId: student.userId,
+                studentCode: student.studentCode,
+                fullName: student.user.fullName,
+                email: student.user.email,
+                phoneNumber: student.phoneNumber,
+                avt: student.avt,
+                gender: student.gender,
+                address: student.address,
             });
 
             notification.success({
                 title: "Thành công",
-                description: "Cập nhật thông tin sinh viên thành công",
+                description: "Cập nhật thông tin thành công",
             });
+
+            setOriginStudent(student);
             setIsEditing(false);
         } catch (error) {
-            console.error(error);
             notification.error({
                 title: "Lỗi",
-                description: "Không thể cập nhật thông tin",
+                description: "Cập nhật thất bại",
             });
         }
     };
 
+    const renderRow = (
+        label: string,
+        value: any,
+        editableKey?: keyof Student
+    ) => (
+        <>
+            <div className="p-4 border-b font-medium">{label}</div>
+            <div className="p-4 border-b">
+                {isEditing && editableKey ? (
+                    <Input
+                        value={value || ""}
+                        onChange={(e) =>
+                            handleChange(editableKey, e.target.value)
+                        }
+                    />
+                ) : (
+                    value || "-"
+                )}
+            </div>
+        </>
+    );
+    const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !student) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setStudent({ ...student, avt: previewUrl });
+
+    try {
+        await updateStudents(student.id, {
+            userId: student.userId,
+            studentCode: student.studentCode,
+            fullName: student.user.fullName,
+            email: student.user.email,
+            phoneNumber: student.phoneNumber || "",
+            avt: previewUrl,
+            gender: student.gender || "",
+            address: student.address || "",
+            course: student.course || ""
+        });
+
+        notification.success({
+            title: "Thành công",
+            description: "Cập nhật ảnh đại diện thành công",
+        });
+    } catch (error) {
+        notification.error({
+            title: "Lỗi",
+            description: "Không thể cập nhật ảnh đại diện",
+        });
+    }
+};
+
+
+
     return (
         <StudentLayout>
-            <div className="space-y-6 max-w-2xl">
-                <h1 className="text-2xl font-semibold">Hồ sơ Sinh viên</h1>
-
-                <Card>
+            <div className="bg-white rounded-lg shadow-lg 
+                w-full md:w-2/3 
+                max-w-none p-6 relative">
+                <Card className="w-full h-full flex flex-col">
                     <CardHeader className="flex justify-between flex-row">
-                        <div>
-                            <h2 className="text-xl font-semibold">
-                                {formData.user?.fullName || ""}
-                            </h2>
-                            <p className="text-muted-foreground">Student</p>
-                        </div>
+                        <h2 className="text-lg font-semibold">Thông tin sinh viên</h2>
 
-                        {!isEditing && (
+                        {!isEditing ? (
                             <Button variant="outline" onClick={() => setIsEditing(true)}>
-                                Sửa thông tin
+                                Cập nhật thông tin
                             </Button>
-                        )}
-                    </CardHeader>
-
-                    <CardContent className="space-y-4">
-                        <div>
-                            <Label>Mã sinh viên</Label>
-                            <Input disabled value={formData.studentCode || ""} />
-                        </div>
-
-                        <div>
-                            <Label>Họ và tên</Label>
-                            <Input
-                                disabled={!isEditing}
-                                value={formData.user?.fullName || ""}
-                                onChange={(e) =>
-                                    handleChange("user", {
-                                        ...formData.user,
-                                        fullName: e.target.value,
-                                    })
-                                }
-                            />
-                        </div>
-
-                        <div>
-                            <Label>Email</Label>
-                            <Input disabled value={formData.user?.email || ""} />
-                        </div>
-
-                        <div>
-                            <Label>Số điện thoại</Label>
-                            <Input
-                                disabled={!isEditing}
-                                value={formData.phoneNumber || ""}
-                                onChange={(e) =>
-                                    handleChange("phoneNumber", e.target.value)
-                                }
-                            />
-                        </div>
-
-                        {isEditing && (
-                            <div className="flex justify-end gap-3">
+                        ) : (
+                            <div className="flex gap-2">
                                 <Button
                                     variant="outline"
                                     onClick={() => {
-                                        setFormData({ ...formData }); // reset form
+                                        setStudent(originStudent);
                                         setIsEditing(false);
                                     }}
                                 >
                                     Hủy
                                 </Button>
-                                <Button onClick={handleSave}>Cập nhật</Button>
+                                <Button onClick={handleSave}>Lưu</Button>
                             </div>
                         )}
+                    </CardHeader>
+
+                    <CardContent>
+                        <div className="grid grid-cols-2 auto-rows-min border rounded-lg overflow-hidden">
+
+                            {/* Avatar full 2 columns */}
+                            <div className="p-6 border-b col-span-2 flex items-center gap-4">
+                                <Avatar className="w-40 h-40">
+                                    <AvatarImage src={student.avt} />
+                                    <AvatarFallback>SV</AvatarFallback>
+                                </Avatar>
+
+                                <div className="flex flex-col gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => document.getElementById("avatarInput")?.click()}
+                                    >
+                                        Đổi ảnh
+                                    </Button>
+
+                                    <input
+                                        id="avatarInput"
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleAvatarChange}
+                                    />
+                                </div>
+                            </div>
+
+                            {renderRow("StudentCode", student.studentCode)}
+                            {renderRow("FullName", student.user.fullName)}
+                            {renderRow("Email", student.user.email)}
+                            {renderRow("PhoneNumber", student.phoneNumber, "phoneNumber")}
+                            {renderRow("Gender", student.gender)}
+                            {renderRow("Address", student.address, "address")}
+                        </div>
                     </CardContent>
+
                 </Card>
             </div>
         </StudentLayout>
