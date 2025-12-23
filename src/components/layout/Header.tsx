@@ -23,7 +23,7 @@ export function Header({ avatarUrl }: HeaderProps) {
         const user = await getCurrentUser();
         if (user.role === "Student") {
           const studentsRes = await getStudents(page, pageSize, search);
-          const student = studentsRes.data.data.find(s => s.userId === currentUser.id);
+          const student = studentsRes.data.data.find(s => s.userId === user.id);
           user.avt = student.avt;
 
         }

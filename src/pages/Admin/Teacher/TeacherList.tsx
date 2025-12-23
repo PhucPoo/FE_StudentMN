@@ -123,7 +123,8 @@ export default function TeacherInfo() {
                   <TableHead>Gender</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>PhoneNumber</TableHead>
-                  <TableHead>Chuyên ngành</TableHead>
+                  <TableHead>Major</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -149,6 +150,17 @@ export default function TeacherInfo() {
                     <TableCell>{t.user.email}</TableCell>
                     <TableCell>{t.phoneNumber}</TableCell>
                     <TableCell>{majors.find((m) => m.id === t.majorId)?.majorName || ""}</TableCell>
+                    <TableCell>
+                      {Boolean(t.isDelete) ? (
+                        <span className="px-2 py-1 text-white bg-red-500 rounded-md text-center text-sm">
+                          Đã nghỉ học
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 text-green-600 border border-green-600 rounded-md text-center text-sm">
+                          Hoạt động
+                        </span>
+                      )}
+                    </TableCell>
                     <TableCell className="flex gap-2">
                       <Button
                         variant="ghost"

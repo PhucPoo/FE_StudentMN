@@ -137,7 +137,7 @@ export interface CourseSection {
 }
 export interface Subject {
     id: number;
-    subjectCode: number;
+    subjectCode:  string | null;
     subjectName?: string | null;
     credits: number;
     majorId: number;
