@@ -12,6 +12,9 @@ import TeacherList from "@/pages/Admin/Teacher/TeacherList";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AccountList from "@/pages/Admin/Account/AccountList";
 import ClassList from "@/pages/Admin/Class/ClassList";
+import DashboardStudent from "@/pages/Admin/Student/dashboardStudent";
+import DashboardTeacher from "@/pages/Admin/Teacher/dashboardTeacher";
+import ClassListByTeacher from "@/pages/Admin/Teacher/managerClassByTeacher";
 
 
 
@@ -33,9 +36,13 @@ const AppRouter = () => {
         <Route path="/student-info" element={<StudentInfo />} />
 
          {/* Student */}
-        <Route path="/student" element={<Grades />} />
+        <Route path="/student" element={<DashboardStudent />} />
         <Route path="/grades" element={<Grades />} />
 
+         {/* Teacher */}
+        <Route path="/teacher" element={<DashboardTeacher />} />
+        <Route path="/enter-grades" element={<Grades />} />
+        <Route path="/class-by-teacher" element={<ClassListByTeacher />} />
         {/* Common */}
         <Route path="/profile" element={<Profile />} />
 

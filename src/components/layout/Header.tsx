@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { Avatar, Dropdown, Menu, notification } from "antd";
 import { SettingOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { getStudentById } from "@/service/studentService";
+import { getStudentById, getStudents } from "@/service/studentService";
+import { getTeachers } from "@/service/teacherService";
 
 interface HeaderProps {
   avatarUrl?: string;
@@ -11,6 +12,9 @@ interface HeaderProps {
 
 export function Header({ avatarUrl }: HeaderProps) {
   const [currentUser, setCurrentUser] = useState<any | null>(null);
+  const [page] = useState(1);
+  const [pageSize] = useState(50);
+  const [search] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,8 +22,29 @@ export function Header({ avatarUrl }: HeaderProps) {
       try {
         const user = await getCurrentUser();
         if (user.role === "Student") {
-          const student = await getStudentById(user.id);
-          user.avt = student.data.data.avt;
+          const studentsRes = await getStudents(page, pageSize, search);
+          const student = studentsRes.data.data.find(s => s.userId === currentUser.id);
+          user.avt = student.avt;
+
+        }
+        setCurrentUser(user);
+      } catch (err) {
+        console.error("Không lấy được user", err);
+      }
+    }
+    fetchUser();
+  }, []);
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const user = await getCurrentUser();
+        if (user.role === "Teacher") {
+          const teachersRes = await getTeachers(page, pageSize, search);
+          const teacher = teachersRes.data.data.find(s => s.userId === user.id);
+          console.log(">>>>>>>>>",teacher);
+          
+          user.avt = teacher.avt;
+
         }
         setCurrentUser(user);
       } catch (err) {
@@ -29,7 +54,7 @@ export function Header({ avatarUrl }: HeaderProps) {
     fetchUser();
   }, []);
 
-    const items = [
+  const items = [
     {
       key: "update",
       label: "Cập nhật thông tin",
@@ -48,7 +73,7 @@ export function Header({ avatarUrl }: HeaderProps) {
     if (e.key === "logout") {
       localStorage.removeItem("token");
       navigate("/");
-       notification.success({
+      notification.success({
         title: "Thành công",
         description: "Đăng xuất thành công!",
         placement: "topRight",
@@ -60,7 +85,7 @@ export function Header({ avatarUrl }: HeaderProps) {
   const avatarToShow = avatarUrl || currentUser?.avt;
 
   return (
-     <header className="sticky top-0 z-30 flex h-16 items-center justify-end gap-4 border-b border-border bg-card px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-end gap-4 border-b border-border bg-card px-6">
       <Dropdown
         menu={{ items, onClick: handleMenuClick }}
         placement="bottomRight"

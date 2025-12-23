@@ -8,4 +8,4 @@ export const updateTeachers = (id: number, data: any) =>
   });
 export const deteleTeachers = (id:number) => api.delete(`Teachers/${id}`)
 
-export const getTeacherByUserId=(userId: number)  => api.get(`Teachers/by-user/${userId}`);
+export const getTeacherById=(id: number)  => api.get(`Teachers/by-id/${id}`);

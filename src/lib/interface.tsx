@@ -7,6 +7,8 @@ export interface User {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 }
 
 export interface Class {
@@ -20,6 +22,8 @@ export interface Class {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 
 }
 
@@ -45,6 +49,8 @@ export interface Teacher {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 }
 
 export interface User {
@@ -53,13 +59,14 @@ export interface User {
     fullName: string;
     email: string;
     roleId: number;
-    isActive: boolean;
     role?: Role | null;
     refreshToken?: string | null;
     refreshTokenExpiryTime?: string | null;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 }
 
 export interface Major {
@@ -69,6 +76,8 @@ export interface Major {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 }
 export interface Role {
     id: number;
@@ -91,13 +100,14 @@ export interface Enrollment {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 }
 
 export interface Student {
     id: number;
     avt?: string | null;
     studentCode?: string | null;
-    fullName?: string | null;
     dateOfBirth: string;
     gender?: string | null;
     course?: string | null;
@@ -109,7 +119,7 @@ export interface Student {
     class?: Class | null;
     createdAt?: string;
     updatedAt?: string;
-    deletedAt?: string | null;
+    isDelete?: boolean | null;
 }
 export interface CourseSection {
     id: number;
@@ -122,17 +132,21 @@ export interface CourseSection {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 }
 export interface Subject {
-  id: number; 
-  subjectCode: number;
-  subjectName?: string | null;
-  credits: number;
-  majorId: number;
-   major?: Major | null;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string | null;
+    id: number;
+    subjectCode: number;
+    subjectName?: string | null;
+    credits: number;
+    majorId: number;
+    major?: Major | null;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string | null;
+    isDelete?: boolean | null;
+
 }
 
 

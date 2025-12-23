@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { notification, Select } from "antd";
 import { updateStudents } from "@/service/studentService";
-import { Class } from "@/lib/interface";
+import { Class, Student } from "@/lib/interface";
 import { getClasses } from "@/service/classService";
 const { Option } = Select;
 
@@ -11,7 +11,7 @@ interface UpdateStudentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdateSuccess: () => void;
-  studentData: any;
+  studentData: Student;
 }
 
 export default function UpdateStudentModal({
@@ -35,6 +35,7 @@ export default function UpdateStudentModal({
     phoneNumber: "",
     userId: null,
     classId: null,
+    class:null,
   });
   useEffect(() => {
       fetchClasses();
@@ -62,6 +63,7 @@ export default function UpdateStudentModal({
         phoneNumber: studentData.phoneNumber || "",
         userId: studentData.userId || null,
         classId: studentData.classId || null,
+        class: studentData.class.className || null,
       });
     }
   }, [studentData, isOpen]);
@@ -79,6 +81,7 @@ export default function UpdateStudentModal({
         Address: formData.address,
         UserId: formData.userId,
         ClassId: formData.classId,
+        Class: formData.class.className,
       };
 
       await updateStudents(studentData.id, payload);
@@ -153,7 +156,7 @@ export default function UpdateStudentModal({
           <Select
             showSearch
             placeholder="-- Chọn lớp --"
-            value={formData.classId || undefined}
+            value={formData.class || undefined}
             onChange={(value) => handleSelectClass(value)}
             style={{
               width: "100%",
@@ -166,7 +169,7 @@ export default function UpdateStudentModal({
           >
             {classes.map((cls) => (
               <Option key={cls.id} value={cls.id}>
-                {cls.id}
+                {cls.className}
               </Option>
             ))}
           </Select>

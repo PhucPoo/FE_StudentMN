@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getCurrentUser } from "@/service/authService";
-import { getStudentById, getStudents, updateStudents } from "@/service/studentService";
 import { notification } from "antd";
-import { StudentLayout } from "@/components/layout/StudentLayout";
-import { Student } from "@/lib/interface";
+import { TeacherLayout } from "@/components/layout/TeacherLayout";
+import { Teacher } from "@/lib/interface";
+import { getTeachers, updateTeachers } from "@/service/teacherService";
 
-export default function ProfileStudent() {
-    const [formData, setFormData] = useState<Student | null>(null);
+export default function ProfileTeacher() {
+    const [formData, setFormData] = useState<Teacher | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [page] = useState(1);
@@ -18,31 +18,31 @@ export default function ProfileStudent() {
     const [search] = useState("");
 
     useEffect(() => {
-        async function fetchStudent() {
+        async function fetchTeacher() {
             try {
                 setLoading(true);
 
                 const currentUser = await getCurrentUser();
 
-                const studentsRes = await getStudents(page, pageSize, search);
+                const teachersRes = await getTeachers(page, pageSize, search);
 
-                const student = studentsRes.data.data.find(s => s.userId === currentUser.id);
+                const teacher = teachersRes.data.data.find(s => s.userId === currentUser.id);
 
-                if (!student) {
+                if (!teacher) {
                     notification.error({
                         title: "Lỗi",
-                        description: "Không tìm thấy dữ liệu sinh viên",
+                        description: "Không tìm thấy dữ liệu giảng viên",
                     });
                     return;
                 }
 
-                setFormData(student);
+                setFormData(teacher);
 
             } catch (error) {
                 console.error(error);
                 notification.error({
                     title: "Lỗi",
-                    description: "Không thể lấy dữ liệu sinh viên",
+                    description: "Không thể lấy dữ liệu giảng viên",
                 });
             } finally {
                 setLoading(false);
@@ -50,21 +50,21 @@ export default function ProfileStudent() {
 
         }
 
-        fetchStudent();
+        fetchTeacher();
     }, []);
 
-    if (loading) return <p>Loading student...</p>;
-    if (!formData) return <p>Không tìm thấy dữ liệu sinh viên</p>;
+    if (loading) return <p>Loading Teacher...</p>;
+    if (!formData) return <p>Không tìm thấy dữ liệu giảng viên</p>;
 
-    const handleChange = (key: keyof Student, value: any) => {
+    const handleChange = (key: keyof Teacher, value: any) => {
         setFormData({ ...formData, [key]: value });
     };
 
     const handleSave = async () => {
         try {
-            await updateStudents(formData.id, {
+            await updateTeachers(formData.id, {
                 userId: formData.userId,
-                studentCode: formData.studentCode,
+                teacherCode: formData.teacherCode,
                 fullName: formData.user.fullName,
                 email: formData.user.email,
                 phoneNumber: formData.phoneNumber,
@@ -75,7 +75,7 @@ export default function ProfileStudent() {
 
             notification.success({
                 title: "Thành công",
-                description: "Cập nhật thông tin sinh viên thành công",
+                description: "Cập nhật thông tin giảng viên thành công",
             });
             setIsEditing(false);
         } catch (error) {
@@ -88,9 +88,9 @@ export default function ProfileStudent() {
     };
 
     return (
-        <StudentLayout>
+        <TeacherLayout>
             <div className="space-y-6 max-w-2xl">
-                <h1 className="text-2xl font-semibold">Hồ sơ Sinh viên</h1>
+                <h1 className="text-2xl font-semibold">Hồ sơ giảng viên</h1>
 
                 <Card>
                     <CardHeader className="flex justify-between flex-row">
@@ -98,7 +98,7 @@ export default function ProfileStudent() {
                             <h2 className="text-xl font-semibold">
                                 {formData.user?.fullName || ""}
                             </h2>
-                            <p className="text-muted-foreground">Student</p>
+                            <p className="text-muted-foreground">Teacher</p>
                         </div>
 
                         {!isEditing && (
@@ -110,8 +110,8 @@ export default function ProfileStudent() {
 
                     <CardContent className="space-y-4">
                         <div>
-                            <Label>Mã sinh viên</Label>
-                            <Input disabled value={formData.studentCode || ""} />
+                            <Label>Mã giảng viên</Label>
+                            <Input disabled value={formData.teacherCode || ""} />
                         </div>
 
                         <div>
@@ -161,6 +161,6 @@ export default function ProfileStudent() {
                     </CardContent>
                 </Card>
             </div>
-        </StudentLayout>
+        </TeacherLayout>
     );
 }
