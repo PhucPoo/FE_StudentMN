@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 import { Edit, Plus, Search, Trash2 } from "lucide-react";
 import { Table } from "@/components/ui/table";
 import { Pagination, Modal, notification } from 'antd';
-import AddSubject from "./AddSubject";
-import UpdateSubject from "./UpdateSubject";
 import { deteleSubjects, getSubjects } from "@/service/subjectService";
+import AddSubject from "./addSubject";
+import UpdateSubject from "./updateSubject";
 
 export default function SubjectInfo() {
   const [subjects, setSubjects] = useState([]);

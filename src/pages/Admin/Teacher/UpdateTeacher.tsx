@@ -27,6 +27,7 @@ export default function UpdateteacherModal({
     email: "",
     phoneNumber: "",
     userId: null,
+    majorId: null,
   });
 
   useEffect(() => {
@@ -44,6 +45,8 @@ export default function UpdateteacherModal({
         email: teacherData.user.email || "",
         phoneNumber: teacherData.phoneNumber || "",
         userId: teacherData.userId || null,
+        majorId: teacherData.majorId || null,
+
       });
     }
   }, [teacherData, isOpen]);
@@ -60,6 +63,7 @@ export default function UpdateteacherModal({
         PhoneNumber: formData.phoneNumber,
         Address: formData.address,
         UserId: formData.userId,
+        MajorId: teacherData.majorId,
       };
 
       await updateTeachers(teacherData.id, payload);
@@ -117,6 +121,11 @@ export default function UpdateteacherModal({
             value={formData.gender}
             readOnly
             className="bg-gray-100 cursor-not-allowed"
+          />
+          <Input
+            placeholder="Địa chỉ"
+            value={formData.address}
+            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
           />
           <Input
             placeholder="Email"

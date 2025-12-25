@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
     ],
   },
   { icon: GraduationCap, label: "Quản lý lớp học", path: "/class" },
-  // {icon: GraduationCap, label: "Quản lý lớp học phần", path: "/courseSection" },
+  { icon: GraduationCap, label: "Quản lý lớp học phần", path: "/courseSection" },
   // {icon: Layers, label: "Quản lý đăng kí học phần", path: "/enrollment" },
   { icon: Layers, label: "Quản lý chuyên khoa", path: "/major" },
   { icon: BookOpen, label: "Quản lý môn học", path: "/subject" },

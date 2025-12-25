@@ -30,7 +30,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { icon: LayoutDashboard, label: "Home", path: "/student" },
 
-
+  { icon: GraduationCap, label: "Đăng kí học phần", path: "/enrollment" },
   { icon: ClipboardList, label: "Bảng điểm SV", path: "/grades" },
   { icon: User, label: "Hồ sơ cá nhân", path: "/profile" },
 ];

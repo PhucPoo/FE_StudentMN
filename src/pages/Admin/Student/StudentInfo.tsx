@@ -72,7 +72,6 @@ export default function StudentInfo() {
       },
     });
   };
-console.log(">>>>", students);
 
   return (
     <MainLayout>
